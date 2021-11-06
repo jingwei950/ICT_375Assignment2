@@ -23,7 +23,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
         
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
-                xhr.responseText;
+                console.log(xhr.responseText);
                 
             }
         }
