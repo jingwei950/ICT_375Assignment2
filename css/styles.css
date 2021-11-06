@@ -1,0 +1,17 @@
+/* Div styles start */
+#body{
+    width: 50%;
+    padding-left: 25%;
+}
+
+#data, #date, #format{
+    background-color: silver;
+    padding: 10px;
+    /* padding-top: 5px; */
+    margin-bottom: 20px;
+}
+/* Div styles end */
+
+h3, input, label{
+    margin-left: 10px;
+}
