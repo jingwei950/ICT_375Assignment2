@@ -8,7 +8,7 @@ var handle = {
     "/"              : requestHandler.reqStart,
     "/reqXml"        : requestHandler.reqXml,
     "/reqJson"       : requestHandler.reqJson,
-    "/js/client.js"  : requestHandler.reqJs,
+    "/js/app.js"  : requestHandler.reqJs,
     "/css/styles.css": requestHandler.reqCss,
     "/error"         : requestHandler.reqError,
 };

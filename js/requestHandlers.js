@@ -28,9 +28,15 @@ function reqStart(response, request, pathName){
 function reqJs(response, request, pathName){
     console.log("JavaScript called");
     fs.readFile("." + pathName, function(error, data){
-        response.writeHead(200, {"Content-Type":"text/javascript"});
-        response.write(data);
-        response.end(); 
+        if(error){
+            console.log("JavaScript read error");
+        }
+        else if(data){
+            console.log("JavaScript read successfully");
+            response.writeHead(200, {"Content-Type":"text/javascript"});
+            response.write(data);
+            response.end(); 
+        }        
     });
 }
 
@@ -38,9 +44,15 @@ function reqJs(response, request, pathName){
 function reqCss(response, request, pathName){
     console.log("Css called");
     fs.readFile("." + pathName, function(error, data){
-        response.writeHead(200, {"Content-Type":"text/css"});
-        response.write(data);
-        response.end(); 
+        if(error){
+            console.log("CSS read error");
+        }
+        else if(data){
+            console.log("CSS read successfully");
+            response.writeHead(200, {"Content-Type":"text/css"});
+            response.write(data);
+            response.end(); 
+        }
     });
 }
 
@@ -56,7 +68,8 @@ function reqXml(response, request, pathName){
         else if(data){
             console.log("Request handler 'start' was called");
             response.writeHead(200, {"Content-Type":"text/html"});
-            response.write(data);
+            response.write("Success");
+            // response.write(data);
             response.end();   
         }
     });
