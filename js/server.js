@@ -16,11 +16,7 @@ function startServer(route, handle){
     const server = http.createServer(function(request, response){   
         console.log("Requested URL: " + request.url);
         var pathName = url.parse(request.url).pathname;
-        console.log("Path: " + pathName);
- 
-        //Call function route()
-        route(pathName, request, response, handle);
-
+        console.log("Path: " + pathName);     
 
         //Download requested file
         var form = new formid.IncomingForm();
@@ -49,6 +45,9 @@ function startServer(route, handle){
                 }
             }
         });
+
+        //Call function route()
+        route(pathName, request, response, handle);
     });
 
     //Listen to port

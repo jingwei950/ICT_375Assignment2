@@ -74,16 +74,16 @@ function reqXml(response, request, pathName) {
     
     //Parse form
     form.parse(request, function (error, field, file) {
-        var selected_year = field.year;
-        var start = field.start;
-        var end = field.end;
+        var selectedYear = field.year;
+        var selectedStartM = field.start;
+        var selectedEndM = field.end;
         // console.log(field);
 
-        var startMonth = monthNumber.indexOf(start.toLowerCase());
-        var endMonth = monthNumber.indexOf(end.toLowerCase());
-        console.log("Year: " + selected_year + "\n" + "Start month: " + startMonth + "\n" + "End month: " + endMonth);
+        var startMonth = monthNumber.indexOf(selectedStartM.toLowerCase());
+        var endMonth = monthNumber.indexOf(selectedEndM.toLowerCase());
+        console.log("Year: " + selectedYear + "\n" + "Start month: " + startMonth + "\n" + "End month: " + endMonth);
 
-        fs.readFile("./data/" + selected_year + ".xml", "utf8", function (error, data) {   
+        fs.readFile("./data/" + selectedYear + ".xml", "utf8", function (error, data) {   
             if (error) {
                 console.log("Error reading file");
                 response.writeHead(404, {"Content-Type": "text/html"});
@@ -91,7 +91,7 @@ function reqXml(response, request, pathName) {
                 response.end();
             } 
             else if (data) {
-                console.log("Successfully read " + selected_year + ".xml file");
+                console.log("Successfully read " + selectedYear + ".xml file");
                 // console.log(data);
 
                 //Construct parser
@@ -194,9 +194,9 @@ function reqJson(response, request, pathName) {
 
     //Parse form
     form.parse(request, function (error, field, file) {
-        var selected_year = field.year;
+        var selectedYear = field.year;
         console.log(year);
-        fs.readFile("./data/" + selected_year + ".json", function (error, data) {
+        fs.readFile("./data/" + selectedYear + ".json", function (error, data) {
             if (error) {
                 console.log("Error reading file");
                 response.writeHead(404, {"Content-Type": "text/html"});
@@ -204,7 +204,7 @@ function reqJson(response, request, pathName) {
                 response.end();
             } 
             else if (data) {
-                console.log("Successfully read " + selected_year + ".json file");
+                console.log("Successfully read " + selectedYear + ".json file");
                 response.writeHead(200, {"Content-Type": "text/html"});
                 // response.write(data);
                 response.write("Success");
