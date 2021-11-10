@@ -94,7 +94,7 @@ function reqXml(response, request, pathName) {
                 var testXML = 'http://ceto.murdoch.edu.au/~34053405/ICT375/xml/2007test.xml'; //TO BE DELETED AFTER TEST
 
                 //Retrieve XML from link provided
-                http.get(file_url, function (urlRes) {
+                http.get(testXML, function (urlRes) {
                     var data = '';
                     var parser = new xml2js.Parser();
 
@@ -118,102 +118,118 @@ function reqXml(response, request, pathName) {
                                 //Loop through objects
                                 for (var i = 0; i < records.length; i++) {
                                     if (records[i].date[0].includes("/01/")) {
-                                        // console.log(records[i].ws[0]);
                                         requestedRec.push({
                                             Month: 'Jan',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     } else if (records[i].date[0].includes("/02/")) {
                                         requestedRec.push({
                                             Month: 'Feb',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/03/")) {
                                         requestedRec.push({
                                             Month: 'Mar',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/04/")) {
                                         requestedRec.push({
                                             Month: 'Apr',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/05/")) {
                                         requestedRec.push({
                                             Month: 'May',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/06/")) {
                                         requestedRec.push({
                                             Month: 'Jun',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/07/")) {
                                         requestedRec.push({
                                             Month: 'Jul',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/08/")) {
                                         requestedRec.push({
                                             Month: 'Aug',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/09/")) {
                                         requestedRec.push({
                                             Month: 'Sep',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/10/")) {
                                         requestedRec.push({
                                             Month: 'Oct',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/11/")) {
                                         requestedRec.push({
                                             Month: 'Nov',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                     else if (records[i].date[0].includes("/12/")) {
                                         requestedRec.push({
                                             Month: 'Dec',
-                                            Ws: Number(records[i].ws[0])
+                                            Ws: Number(records[i].ws[0]),
+                                            Sr: Number(records[i].sr[0])
                                         });
                                     }
                                 }
                                 console.log(requestedRec);
 
                                 let wsArray = [];
-                                requestedRec.reduce(function (res, {Month,Ws}) {
+                                requestedRec.reduce(function (res, {Month, Ws, Sr}) {
                                     //If there is no month exist in array push empty record
                                     if (!res[Month]) {
                                         res[Month] = {
                                             Month: Month,
+                                            Count: 0,
                                             WsAvg: 0,
-                                            WsCount: 0,
-                                            WsSum: 0
+                                            WsSum: 0,
+                                            SrAvg: 0,
+                                            SrSum: 0
                                         };
                                         wsArray.push(res[Month]);
                                     }
                                     //If there is month exist append these
-                                    res[Month].WsSum += Ws;
-                                    res[Month].WsCount += 1;
-                                    res[Month].WsAvg = res[Month].WsSum / res[Month].WsCount;
+                                    res[Month].Count += 1;
+                                    res[Month].WsSum += Ws;                            
+                                    res[Month].WsAvg = res[Month].WsSum / res[Month].Count;
+                                    res[Month].SrSum += Sr;
+                                    res[Month].SrAvg = res[Month].SrSum / res[Month].Count
                                     return res;
                                 }, {});
                                 console.log(wsArray);     
-                                if(selectedStartM === "january"){
-                                    console.log("Average WindSpeed of " + selectedYear + ": " + wsArray[0].WsAvg.toFixed(2));
-                                } 
+                                // if(selectedStartM === "january"){
+                                //     console.log("Average WindSpeed of " + selectedYear + " " + selectedStartM + ": " + wsArray[0].WsAvg.toFixed(2));
+                                //     console.log("Average Solar Radiation of " + selectedYear + " " + selectedStartM + ": " + wsArray[0].SrAvg.toFixed(2));
+                                // } 
                                 // if(requestedRec.Month)
                                 // console.log(requestedRec[1].Month);
                                 // console.log(requestedRec.length);
