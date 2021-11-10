@@ -86,66 +86,199 @@ function reqXml(response, request, pathName) {
             var selectedStartM = field.start;
             var selectedEndM = field.end;
 
+            console.log(selectedStartM);
+
             if (selectedYear >= 2007 && selectedYear <= 2009) { //Download xml file for year 2007 to 2009
-                //Download directory
-                var DOWNLOAD_DIR = "../Assignment2/data/";
-                var file_name = selectedYear + ".xml";
+
                 var file_url = 'http://it.murdoch.edu.au/~S900432D/ict375/data/' + selectedYear + '.xml';
-                var file = fs.createWriteStream(DOWNLOAD_DIR + file_name, {
-                    'flags': 'w'
-                });
+                var testXML = 'http://ceto.murdoch.edu.au/~34053405/ICT375/xml/2007test.xml'; //TO BE DELETED AFTER TEST
 
+                //Retrieve XML from link provided
                 http.get(file_url, function (urlRes) {
-                    //Download xml file
-                    urlRes.pipe(file);
-                    console.log("Data retrieved");
-
-                    //Read downloaded xml file
-                    console.log("Reading file..");
-                    var startMonth = monthNumber.indexOf(selectedStartM.toLowerCase());
-                    var endMonth = monthNumber.indexOf(selectedEndM.toLowerCase());
-                    console.log("Year: " + selectedYear + "\n" + "Start month: " + startMonth + "\n" + "End month: " + endMonth);
+                    var data = '';
                     var parser = new xml2js.Parser();
 
-                    fs.readFile("./test_data/" + selectedYear + "test.xml", "utf8", function (fileError, data) {
-                        if (fileError) {
-                            console.log("Error reading file");
-                            response.writeHead(404, {
-                                "Content-Type": "text/html"
-                            });
-                            response.write("404 not found \n");
-                            response.end();
-                        } else if (data) {
-                            console.log("Successfully read " + selectedYear + ".xml file");
-
-                            //Parser for xml2js
-                            parser.parseString(data, function(xmlError, result){
-                                if(xmlError){
-                                    throw xmlError;
-                                }
-                                else if(result){ //Get result of parsed xml obj
-
-                                    //Shorten Object
-                                    var records = result.weather.record;
-                                    
-                                    //Loop through objects
-                                    for(var i = 0; i < records.length; i++){
-                                        if(records[i].date[0].includes("/01/")){
-                                            console.log("match");
-                                        }else{
-                                            console.log("don't match");
-                                        }
-                                    }
-                                }
-                            });
-                            //         console.log(dataArray);
-                            //         // console.log("Total records:" + (sum - 1) / count);
-                            //         // response.writeHead(200, {"Content-Type": "text/html"});
-                            //         // response.write(data);
-                            //         // response.end();
-                        }
+                    urlRes.on('data', function (chunk) {
+                        data += chunk;
                     });
 
+                    urlRes.on('end', function () {
+                        // console.log(data);
+
+                        //Parser for xml2js
+                        parser.parseString(data, function (xmlError, result) {
+                            if (xmlError) {
+                                throw xmlError;
+                            } else if (result) { //Get result of parsed xml obj
+
+                                var requestedRec = [];
+                                //Shorten Object
+                                var records = result.weather.record;
+
+                                //Loop through objects
+                                for (var i = 0; i < records.length; i++) {
+                                    if (records[i].date[0].includes("/01/")) {
+                                        // console.log(records[i].ws[0]);
+                                        requestedRec.push({
+                                            Month: 'Jan',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    } else if (records[i].date[0].includes("/02/")) {
+                                        requestedRec.push({
+                                            Month: 'Feb',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/03/")) {
+                                        requestedRec.push({
+                                            Month: 'Mar',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/04/")) {
+                                        requestedRec.push({
+                                            Month: 'Apr',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/05/")) {
+                                        requestedRec.push({
+                                            Month: 'May',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/06/")) {
+                                        requestedRec.push({
+                                            Month: 'Jun',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/07/")) {
+                                        requestedRec.push({
+                                            Month: 'Jul',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/08/")) {
+                                        requestedRec.push({
+                                            Month: 'Aug',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/09/")) {
+                                        requestedRec.push({
+                                            Month: 'Sep',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/10/")) {
+                                        requestedRec.push({
+                                            Month: 'Oct',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/11/")) {
+                                        requestedRec.push({
+                                            Month: 'Nov',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                    else if (records[i].date[0].includes("/12/")) {
+                                        requestedRec.push({
+                                            Month: 'Dec',
+                                            Ws: Number(records[i].ws[0])
+                                        });
+                                    }
+                                }
+                                console.log(requestedRec);
+
+                                let wsArray = [];
+                                requestedRec.reduce(function (res, {Month,Ws}) {
+                                    //If there is no month exist in array push empty record
+                                    if (!res[Month]) {
+                                        res[Month] = {
+                                            Month: Month,
+                                            WsAvg: 0,
+                                            WsCount: 0,
+                                            WsSum: 0
+                                        };
+                                        wsArray.push(res[Month]);
+                                    }
+                                    //If there is month exist append these
+                                    res[Month].WsSum += Ws;
+                                    res[Month].WsCount += 1;
+                                    res[Month].WsAvg = res[Month].WsSum / res[Month].WsCount;
+                                    return res;
+                                }, {});
+                                console.log(wsArray);     
+                                if(selectedStartM === "january"){
+                                    console.log("Average WindSpeed of " + selectedYear + ": " + wsArray[0].WsAvg.toFixed(2));
+                                } 
+                                // if(requestedRec.Month)
+                                // console.log(requestedRec[1].Month);
+                                // console.log(requestedRec.length);
+
+                                // if(requestedRec[1].Month === "Apr"){
+                                //     console.log("match");
+                                // }
+                                // for(var j = 0; j < requestedRec.length; j++){
+                                //     if(requestedRec[j].Month === "Apr"){
+                                //         console.log(requestedRec[j].Ws);
+                                //     }
+                                // }
+
+                            }
+                        });
+                    });
+
+
+                    // //Read downloaded xml file
+                    // console.log("Reading file..");
+                    // var startMonth = monthNumber.indexOf(selectedStartM.toLowerCase());
+                    // var endMonth = monthNumber.indexOf(selectedEndM.toLowerCase());
+                    // console.log("Year: " + selectedYear + "\n" + "Start month: " + startMonth + "\n" + "End month: " + endMonth);
+
+                    // fs.readFile("./test_data/" + selectedYear + "test.xml", "utf8", function (fileError, data) {
+                    //     if (fileError) {
+                    //         console.log("Error reading file");
+                    //         response.writeHead(404, {
+                    //             "Content-Type": "text/html"
+                    //         });
+                    //         response.write("404 not found \n");
+                    //         response.end();
+                    //     } else if (data) {
+                    //         console.log("Successfully read " + selectedYear + ".xml file");
+
+                    //         //Parser for xml2js
+                    //         parser.parseString(data, function(xmlError, result){
+                    //             if(xmlError){
+                    //                 throw xmlError;
+                    //             }
+                    //             else if(result){ //Get result of parsed xml obj
+
+                    //                 //Shorten Object
+                    //                 var records = result.weather.record;
+
+                    //                 //Loop through objects
+                    //                 for(var i = 0; i < records.length; i++){
+                    //                     if(records[i].date[0].includes("/01/")){
+                    //                         console.log("match");
+                    //                     }else{
+                    //                         console.log("don't match");
+                    //                     }
+                    //                 }
+                    //             }
+                    //         });
+                    //         //         console.log(dataArray);
+                    //         //         // console.log("Total records:" + (sum - 1) / count);
+                    //         //         // response.writeHead(200, {"Content-Type": "text/html"});
+                    //         //         // response.write(data);
+                    //         //         // response.end();
+                    //     }
+                    // });
+
+                }).on('error', function (err) {
+                    console.log("Error");
                 });
             } else { //Download JSON file for year 2010 to 2016
                 console.log("Run download JSON functions");
