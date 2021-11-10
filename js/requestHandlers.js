@@ -105,9 +105,10 @@ function reqXml(response, request, pathName) {
                     var startMonth = monthNumber.indexOf(selectedStartM.toLowerCase());
                     var endMonth = monthNumber.indexOf(selectedEndM.toLowerCase());
                     console.log("Year: " + selectedYear + "\n" + "Start month: " + startMonth + "\n" + "End month: " + endMonth);
+                    var parser = new xml2js.Parser();
 
-                    fs.readFile("./test_data/" + selectedYear + "test.xml", "utf8", function (error, data) {
-                        if (error) {
+                    fs.readFile("./test_data/" + selectedYear + "test.xml", "utf8", function (fileError, data) {
+                        if (fileError) {
                             console.log("Error reading file");
                             response.writeHead(404, {
                                 "Content-Type": "text/html"
@@ -116,117 +117,27 @@ function reqXml(response, request, pathName) {
                             response.end();
                         } else if (data) {
                             console.log("Successfully read " + selectedYear + ".xml file");
-                            // console.log(data);
-                            var parser = new xml2js.Parser();
 
-                            // parser.parseString
-                            
-                            //Construct parser
-                            parser = new xmldom();
-                            //Call method to parse document
-                            doc = parser.parseFromString(data, 'text/xml');
-                            targetNodes = doc.getElementsByTagName("record");
-
-                            var date, time, windspeed, radiation;
-                            var wsArray = [];
-                            var srArray = [];
-                            var dataArray = [];
-                            var sum = 0;
-                            var count = 0;
-
-                            var startDate = new Date(selectedYear, startMonth, 1); //First day of month
-                            var endDate = new Date(selectedYear, endMonth + 1, 0); //Last day of month
-                            console.log("Start date: " + startDate);
-                            console.log("End date: " + endDate);
-
-                            for (var currentDate = startDate; currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1)) { //if 01/01/2007
-                                console.log("Current date:" + currentDate); //01/01/2007
-                                for (i in targetNodes) { //loop thru all record nodes
-                                    records = targetNodes[i]; //first record node
-                                    var testDate = records.childNodes[1].textContent; //first record node date 
-
-                                    if (testDate.match(currentDate.toLocaleDateString("en-GB"))) { 
-                                        count++;
-                                        console.log("Match " + count + ": " + testDate); 
-                                        
-                                        // if (records.nodeName == "record") {
-                                        //     // console.log(records.childNodes[1].textContent); //Get date
-                                            
-
-                                        //     // for(var currentDate = startDate; currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1)){
-                                        //     //     console.log("Current date:" + currentDate);
-                                        //     //     if(testDate.match(currentDate.toLocaleDateString("en-GB"))){
-                                        //     //         count++;
-                                        //     //         console.log("match " + count);
-                                        //     //     }
-                                        //     //     // dataArray.forEach(obj =>{
-                                        //     //     //     // console.log(obj.date);
-                                        //     //     //     if(obj.date.match(currentDate.toLocaleDateString("en-GB"))){
-                                        //     //     //         wsArray.push(Number(obj.windspeed));
-                                        //     //     //         srArray.push(Number(obj.radiation));
-                                        //     //     //         // console.log(obj.windspeed);
-                                        //     //     //         // console.log(obj.radiation);
-                                        //     //     //         console.log(count);
-                                        //     //     //         count++;
-                                        //     //     //     }
-
-                                        //     //     // });
-                                        //     // } 
-
-
-                                        //     // dataArray.push({
-                                        //     //     date : records.childNodes[1].textContent,
-                                        //     //     time : records.childNodes[3].textContent,
-                                        //     //     windspeed : records.childNodes[5].textContent,
-                                        //     //     radiation : records.childNodes[7].textContent,
-                                        //     // });
-                                        // }
-
-
-                                    }else{
-                                        break;
-                                    }
-                                    // count++;
-                                    // console.log("match " + count);
+                            //Parser for xml2js
+                            parser.parseString(data, function(xmlError, result){
+                                if(xmlError){
+                                    throw xmlError;
                                 }
-                            }
+                                else if(result){ //Get result of parsed xml obj
 
-                            //         // var i = dataArray.length,
-                            //         //     ownerData;
-
-                            //         // while(i--) {
-                            //         //     if(dataArray.date == currentDate) {
-                            //         //         ownerData = users[i];
-                            //         //         break;
-                            //         //     }
-                            //         // }
-                            //         // function add (previousValue, currentValue){
-                            //         //     return previousValue + currentValue
-                            //         // };
-                            //         // console.log("Average WindSpeed: " + wsArray.reduce(add)/count);
-                            //         // console.log("Average Solar Radiation: " + srArray.reduce(add)/count);
-
-                            //         console.log(count);
-                            //         //for(var currentDate = startDate; currentDate <= endDate; currentDate.setDate(currentDate.getDate() + 1)){
-                            //             // console.log(currentDate.toLocaleDateString("en-GB"));
-
-                            //             // if(dataArray.match(currentDate.toLocaleDateString("en-GB"))){ //if date match 
-                            //             //     date = records.childNodes[1].textContent;       //Date
-                            //             //     time = records.childNodes[3].textContent;       //Time
-                            //             //     windspeed = records.childNodes[5].textContent;  //Wind speed
-                            //             //     radiation = records.childNodes[7].textContent;  //Solar Radiation
-
-                            //             //     // console.log("Windspeed of " + records.childNodes[1].textContent + ": " + records.childNodes[5].textContent);
-
-                            //             //     wsArray.push(parseFloat(windspeed));
-                            //             //     sum += parseFloat(wsArray); 
-                            //             //     count++;
-
-                            //             //     console.log("Added to array" + i);
-                            //             // }
-
-                            //         // }
-
+                                    //Shorten Object
+                                    var records = result.weather.record;
+                                    
+                                    //Loop through objects
+                                    for(var i = 0; i < records.length; i++){
+                                        if(records[i].date[0].includes("/01/")){
+                                            console.log("match");
+                                        }else{
+                                            console.log("don't match");
+                                        }
+                                    }
+                                }
+                            });
                             //         console.log(dataArray);
                             //         // console.log("Total records:" + (sum - 1) / count);
                             //         // response.writeHead(200, {"Content-Type": "text/html"});
