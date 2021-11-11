@@ -2,14 +2,15 @@
 
 // const form = $("#myForm");
 const form = document.querySelector("#myForm");
+var wind = $("#wind");
+var radiation = $("#radiation");
+var start = $("#start");
+var end = $("#end");
 
 form.addEventListener("submit", function(e){ //When form is submitted
     e.preventDefault();
-    var wind = $("#wind");
-    var radiation = $("#radiation");
+    
     var year = $("#year").val();
-    var start = $("#start");
-    var end = $("#end");
     var table = $("#table");
     var graph = $("#graph");
     var output = $("#output");
@@ -23,7 +24,9 @@ form.addEventListener("submit", function(e){ //When form is submitted
         
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
-                console.log(xhr.responseText);    
+                //Display Title
+                output.removeAttr("hidden");
+                output.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + xhr.responseText);
                 form.reset();         
             }
         }
@@ -89,27 +92,24 @@ form.addEventListener("submit", function(e){ //When form is submitted
     else{
         console.log("Graph checked: " + false);
     }
-
-    //Display Title
-    output.removeAttr("hidden");
-    output.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>")
-    
-
 });
 
-// function sendReq(){
-//     var xhr = new XMLHttpRequest();
-//     xhr.onreadystatechange = function(){
-//         if(xhr.readyState == 4 && xhr.status == 200){
-//         xhr.responseText;
-//         }
-//         else{
-//         //Run function errorMessage() for displaying error user input messages
-//         }
-//     }
-//     xhr.open("GET", "/", true);  
-//     xhr.send();
-// }
+//Check box validation
+wind.on('click', function(){
+    if(wind.prop("checked") === false && radiation.prop("checked") === false){
+        $("#dataErrMsg").html("Please select at least 1 option").css("color", "red");
+    }else{
+        $("#dataErrMsg").html("");
+    }
+});
 
+radiation.on('click', function(){
+    if(wind.prop("checked") === false && radiation.prop("checked") === false){
+        $("#dataErrMsg").html("Please select at least 1 option").css("color", "red");
+    }else{
+        $("#dataErrMsg").html("");
+    }
+});
 
-
+//Start month and end month validation
+start.val()

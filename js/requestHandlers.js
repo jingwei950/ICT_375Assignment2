@@ -69,13 +69,20 @@ function reqCss(response, request, pathName) {
 
 //Handle XML request
 function reqXml(response, request, pathName) {
-    var monthNumber = ["january", "february", "march", "april", "may", "june", "july", "august",
-        "september", "october", "november", "december"
+    var monthNumber = 
+    [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+        "Jul", "Aug","Sep", "Oct", "Nov", "Dec"
     ];
+    var resultTable = [];
     var parser, doc, targetNodes;
     var i, targetObj, fcObj, recordContent, records, testMonth, startDate, endDate;
 
+    var requestedMonths = [];
+    var table = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>'
+    + '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
 
+    
     var form = new formid.IncomingForm();
     //Parse form
     form.parse(request, function (error, field, file) {
@@ -86,15 +93,19 @@ function reqXml(response, request, pathName) {
             var selectedStartM = field.start;
             var selectedEndM = field.end;
 
-            console.log(selectedStartM);
+            //Get all the months user requested
+            for(var j = monthNumber.indexOf(selectedStartM); j <= monthNumber.indexOf(selectedEndM); j++){
+                requestedMonths.push(monthNumber[j]); //Store all requested months into array
+            }
+            console.log(requestedMonths);
 
-            if (selectedYear >= 2007 && selectedYear <= 2009) { //Download xml file for year 2007 to 2009
+            if (selectedYear >= 2007 && selectedYear <= 2009) {
 
                 var file_url = 'http://it.murdoch.edu.au/~S900432D/ict375/data/' + selectedYear + '.xml';
                 var testXML = 'http://ceto.murdoch.edu.au/~34053405/ICT375/xml/2007test.xml'; //TO BE DELETED AFTER TEST
 
                 //Retrieve XML from link provided
-                http.get(testXML, function (urlRes) {
+                http.get(file_url, function (urlRes) {
                     var data = '';
                     var parser = new xml2js.Parser();
 
@@ -203,7 +214,7 @@ function reqXml(response, request, pathName) {
                                 }
                                 console.log(requestedRec);
 
-                                let wsArray = [];
+                                let avgArray = [];
                                 requestedRec.reduce(function (res, {Month, Ws, Sr}) {
                                     //If there is no month exist in array push empty record
                                     if (!res[Month]) {
@@ -215,7 +226,7 @@ function reqXml(response, request, pathName) {
                                             SrAvg: 0,
                                             SrSum: 0
                                         };
-                                        wsArray.push(res[Month]);
+                                        avgArray.push(res[Month]);
                                     }
                                     //If there is month exist append these
                                     res[Month].Count += 1;
@@ -225,77 +236,72 @@ function reqXml(response, request, pathName) {
                                     res[Month].SrAvg = res[Month].SrSum / res[Month].Count
                                     return res;
                                 }, {});
-                                console.log(wsArray);     
-                                // if(selectedStartM === "january"){
-                                //     console.log("Average WindSpeed of " + selectedYear + " " + selectedStartM + ": " + wsArray[0].WsAvg.toFixed(2));
-                                //     console.log("Average Solar Radiation of " + selectedYear + " " + selectedStartM + ": " + wsArray[0].SrAvg.toFixed(2));
-                                // } 
-                                // if(requestedRec.Month)
-                                // console.log(requestedRec[1].Month);
-                                // console.log(requestedRec.length);
+                                console.log(avgArray); 
 
-                                // if(requestedRec[1].Month === "Apr"){
-                                //     console.log("match");
-                                // }
-                                // for(var j = 0; j < requestedRec.length; j++){
-                                //     if(requestedRec[j].Month === "Apr"){
-                                //         console.log(requestedRec[j].Ws);
+                                table += '<tr><td>Wind Speed</td>';
+                                avgArray.filter(function(item) {
+                                    if(requestedMonths.includes(item.Month)){
+                                        table += "<td>"+ item.WsAvg.toFixed(2) +"</td>";
+                                        console.log("<td>"+ item.WsAvg +"</td>");
+                                    }
+                                    else{
+                                        table += "<td></td>";
+                                        console.log("<td></td>");
+                                    };
+                                });
+                                table += '</tr>';
+                                
+                                table += '<tr><td>Solar Radiation</td>';
+                                avgArray.filter(function(item) {
+                                    
+                                    if(requestedMonths.includes(item.Month)){
+                                        table += "<td>"+ item.SrAvg.toFixed(2) +"</td>";
+                                        console.log("<td>"+ item.SrAvg +"</td>");
+                                    }
+                                    else{
+                                        table += "<td></td>";
+                                        console.log("<td></td>");
+                                    };
+                                    return  
+                                });
+                                table += "</tr></table>"
+                                console.log(table);
+
+                                // table += '<tr><td>Wind Speed</td>';                             
+                                // for(var k = 0; k < requestedMonths.length; k++){
+                                    
+                                //     if(requestedMonths[k] == avgArray[k].Month){
+                                //         table += "<td>" + avgArray[k].WsAvg.toFixed(2) + "</td>";
+                                //     }
+                                //     else{
+                                //         table += "<td></td>";
                                 //     }
                                 // }
 
+                                // table += '</tr><tr><td>Solar Radiation</td>';
+                                // for(var k = 0; k < requestedMonths.length; k++){
+                                    
+                                //     if(requestedMonths[k] == avgArray[k].Month){
+                                //         table += "<td>" + avgArray[k].SrAvg.toFixed(2) + "</td>";
+                                //     }
+                                //     else{
+                                //         table += "<td></td>";
+                                //     }
+                                // }
+                                // table += '</table>';
+                                console.log(table);
+                                response.writeHead(200, {"Content-Type": "text/css"});
+                                response.write(table);
+                                response.end();
                             }
                         });
                     });
-
-
-                    // //Read downloaded xml file
-                    // console.log("Reading file..");
-                    // var startMonth = monthNumber.indexOf(selectedStartM.toLowerCase());
-                    // var endMonth = monthNumber.indexOf(selectedEndM.toLowerCase());
-                    // console.log("Year: " + selectedYear + "\n" + "Start month: " + startMonth + "\n" + "End month: " + endMonth);
-
-                    // fs.readFile("./test_data/" + selectedYear + "test.xml", "utf8", function (fileError, data) {
-                    //     if (fileError) {
-                    //         console.log("Error reading file");
-                    //         response.writeHead(404, {
-                    //             "Content-Type": "text/html"
-                    //         });
-                    //         response.write("404 not found \n");
-                    //         response.end();
-                    //     } else if (data) {
-                    //         console.log("Successfully read " + selectedYear + ".xml file");
-
-                    //         //Parser for xml2js
-                    //         parser.parseString(data, function(xmlError, result){
-                    //             if(xmlError){
-                    //                 throw xmlError;
-                    //             }
-                    //             else if(result){ //Get result of parsed xml obj
-
-                    //                 //Shorten Object
-                    //                 var records = result.weather.record;
-
-                    //                 //Loop through objects
-                    //                 for(var i = 0; i < records.length; i++){
-                    //                     if(records[i].date[0].includes("/01/")){
-                    //                         console.log("match");
-                    //                     }else{
-                    //                         console.log("don't match");
-                    //                     }
-                    //                 }
-                    //             }
-                    //         });
-                    //         //         console.log(dataArray);
-                    //         //         // console.log("Total records:" + (sum - 1) / count);
-                    //         //         // response.writeHead(200, {"Content-Type": "text/html"});
-                    //         //         // response.write(data);
-                    //         //         // response.end();
-                    //     }
-                    // });
-
                 }).on('error', function (err) {
                     console.log("Error");
                 });
+
+                
+ 
             } else { //Download JSON file for year 2010 to 2016
                 console.log("Run download JSON functions");
                 route(pathName, request, response, handle);
@@ -307,6 +313,7 @@ function reqXml(response, request, pathName) {
 
         }
     });
+    
 }
 
 //Handle JSON request

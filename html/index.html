@@ -16,8 +16,9 @@
             <form action="" id="myForm">
                 <div id="data">
                     <h3>Data to Display</h3>
-                    <input type="checkbox" name="wind" id="wind"><label for="wind">Wind Speed</label>
-                    <input type="checkbox" name="radiation" id="radiation"><label for="radiation">Solar Radiation</label>
+                    <input type="checkbox" name="wind" id="wind" checked><label for="wind" >Wind Speed</label>
+                    <input type="checkbox" name="radiation" id="radiation" checked><label for="radiation">Solar Radiation</label>
+                    <span id="dataErrMsg"></span>
                 </div>
                 <div id="date">
                     <h3>Date Range</h3>
@@ -27,34 +28,34 @@
 
                     <label for="start" id="lblStart">Start Month:</label>
                     <select name="start" id="start">
-                        <option value="january">January</option>
-                        <option value="february">February</option>
-                        <option value="march">March</option>
-                        <option value="april">April</option>
-                        <option value="may">May</option>
-                        <option value="june">June</option>
-                        <option value="july">July</option>
-                        <option value="august">August</option>
-                        <option value="september">September</option>
-                        <option value="october">October</option>
-                        <option value="november">November</option>
-                        <option value="december">December</option>
+                        <option value="Jan">January</option>
+                        <option value="Feb">February</option>
+                        <option value="Mar">March</option>
+                        <option value="Apr">April</option>
+                        <option value="May">May</option>
+                        <option value="Jun">June</option>
+                        <option value="Jul">July</option>
+                        <option value="Aug">August</option>
+                        <option value="Sep">September</option>
+                        <option value="Oct">October</option>
+                        <option value="Nov">November</option>
+                        <option value="Dec">December</option>
                     </select>
 
                     <label for="end" id="lblEnd">Start Month:</label>
                     <select name="end" id="end">
-                        <option value="january">January</option>
-                        <option value="february">February</option>
-                        <option value="march">March</option>
-                        <option value="april">April</option>
-                        <option value="may">May</option>
-                        <option value="june">June</option>
-                        <option value="july">July</option>
-                        <option value="august">August</option>
-                        <option value="september">September</option>
-                        <option value="october">October</option>
-                        <option value="november">November</option>
-                        <option value="december">December</option>
+                        <option value="Jan">January</option>
+                        <option value="Feb">February</option>
+                        <option value="Mar">March</option>
+                        <option value="Apr">April</option>
+                        <option value="May">May</option>
+                        <option value="Jun">June</option>
+                        <option value="Jul">July</option>
+                        <option value="Aug">August</option>
+                        <option value="Sep">September</option>
+                        <option value="Oct">October</option>
+                        <option value="Nov">November</option>
+                        <option value="Dec">December</option>
                     </select>
                 </div>
 
@@ -63,10 +64,12 @@
                     <input type="checkbox" name="table" id="table"><label for="year">Table</label>
                     <input type="checkbox" name="graph" id="graph"><label for="year">Graph</label>
                 </div>
+                <span id="formatErrMsg"></span>
                 <br />
                 <input type="submit" value="Submit" id="submit">
             </form>
-            <div id="output" hidden="hidden">             
+            <div id="output">  
+                        
             </div>
         </div>
         <script src="../js/app.js" type="text/javascript"></script>
