@@ -69,6 +69,7 @@ function reqCss(response, request, pathName) {
 
 //Handle XML request
 function reqXml(response, request, pathName) {
+    //Months
     var monthNumber = 
     [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
@@ -78,7 +79,9 @@ function reqXml(response, request, pathName) {
     var parser, doc, targetNodes;
     var i, targetObj, fcObj, recordContent, records, testMonth, startDate, endDate;
 
+    //Array for storing requested range of months
     var requestedMonths = [];
+    //Generate table
     var table = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>'
     + '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
 
@@ -95,12 +98,14 @@ function reqXml(response, request, pathName) {
 
             //Get all the months user requested
             for(var j = monthNumber.indexOf(selectedStartM); j <= monthNumber.indexOf(selectedEndM); j++){
-                requestedMonths.push(monthNumber[j]); //Store all requested months into array
+                requestedMonths.push(monthNumber[j]); //Store requested range of months into array
             }
             console.log(requestedMonths);
 
+            //If user input selection is between 2007 to 2009
             if (selectedYear >= 2007 && selectedYear <= 2009) {
 
+                //XML file URL link
                 var file_url = 'http://it.murdoch.edu.au/~S900432D/ict375/data/' + selectedYear + '.xml';
                 var testXML = 'http://ceto.murdoch.edu.au/~34053405/ICT375/xml/2007test.xml'; //TO BE DELETED AFTER TEST
 
@@ -126,7 +131,7 @@ function reqXml(response, request, pathName) {
                                 //Shorten Object
                                 var records = result.weather.record;
 
-                                //Loop through objects
+                                //Loop through all records and push it into requestedRec array 
                                 for (var i = 0; i < records.length; i++) {
                                     if (records[i].date[0].includes("/01/")) {
                                         requestedRec.push({
@@ -214,8 +219,18 @@ function reqXml(response, request, pathName) {
                                 }
                                 console.log(requestedRec);
 
+                                //Check if there's any missing months in requestedArray, append empty month with value of avg to 0
+                                const result1 = monthNumber.map(function(m){
+                                    return requestedRec.find(function(a){ 
+                                        if(a.Month != undefined && a.Month != null){
+                                            return a.Month === m
+                                        }
+                                    })||{Month: m, Ws: Number(0), Sr: Number(0)} //If undefined is returned make Avg 0 
+                                });
+                                
+                                console.log(result1);
                                 let avgArray = [];
-                                requestedRec.reduce(function (res, {Month, Ws, Sr}) {
+                                result1.reduce(function (res, {Month, Ws, Sr}) {
                                     //If there is no month exist in array push empty record
                                     if (!res[Month]) {
                                         res[Month] = {
@@ -265,30 +280,7 @@ function reqXml(response, request, pathName) {
                                     return  
                                 });
                                 table += "</tr></table>"
-                                console.log(table);
 
-                                // table += '<tr><td>Wind Speed</td>';                             
-                                // for(var k = 0; k < requestedMonths.length; k++){
-                                    
-                                //     if(requestedMonths[k] == avgArray[k].Month){
-                                //         table += "<td>" + avgArray[k].WsAvg.toFixed(2) + "</td>";
-                                //     }
-                                //     else{
-                                //         table += "<td></td>";
-                                //     }
-                                // }
-
-                                // table += '</tr><tr><td>Solar Radiation</td>';
-                                // for(var k = 0; k < requestedMonths.length; k++){
-                                    
-                                //     if(requestedMonths[k] == avgArray[k].Month){
-                                //         table += "<td>" + avgArray[k].SrAvg.toFixed(2) + "</td>";
-                                //     }
-                                //     else{
-                                //         table += "<td></td>";
-                                //     }
-                                // }
-                                // table += '</table>';
                                 console.log(table);
                                 response.writeHead(200, {"Content-Type": "text/css"});
                                 response.write(table);

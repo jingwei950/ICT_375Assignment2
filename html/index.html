@@ -14,11 +14,11 @@
         <p>Welcome to the system. Please select the data you would like from the form below. (To be edited)</p>
         <h2>Select parameters</h2>
             <form action="" id="myForm">
-                <div id="data">
+                <div id="measurements">
                     <h3>Data to Display</h3>
                     <input type="checkbox" name="wind" id="wind" checked><label for="wind" >Wind Speed</label>
                     <input type="checkbox" name="radiation" id="radiation" checked><label for="radiation">Solar Radiation</label>
-                    <span id="dataErrMsg"></span>
+                    <span id="measurementsErrMsg"></span>
                 </div>
                 <div id="date">
                     <h3>Date Range</h3>
@@ -42,7 +42,7 @@
                         <option value="Dec">December</option>
                     </select>
 
-                    <label for="end" id="lblEnd">Start Month:</label>
+                    <label for="end" id="lblEnd">End Month:</label>
                     <select name="end" id="end">
                         <option value="Jan">January</option>
                         <option value="Feb">February</option>
@@ -61,8 +61,9 @@
 
                 <div id="format">
                     <h3>Output format</h3>
-                    <input type="checkbox" name="table" id="table"><label for="year">Table</label>
-                    <input type="checkbox" name="graph" id="graph"><label for="year">Graph</label>
+                    <input type="checkbox" name="table" id="table" checked><label for="year">Table</label>
+                    <input type="checkbox" name="graph" id="graph" checked><label for="year">Graph</label>
+                    <span id="formatErrMsg"></span>
                 </div>
                 <span id="formatErrMsg"></span>
                 <br />

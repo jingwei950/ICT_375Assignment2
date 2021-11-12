@@ -1,46 +1,49 @@
 'use strict'
-
-// const form = $("#myForm");
 const form = document.querySelector("#myForm");
 var wind = $("#wind");
 var radiation = $("#radiation");
 var start = $("#start");
 var end = $("#end");
+var table = $("#table");
+var graph = $("#graph");
+var allMonths = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+    "Jul", "Aug","Sep", "Oct", "Nov", "Dec"
+];
 
+//
 form.addEventListener("submit", function(e){ //When form is submitted
     e.preventDefault();
     
     var year = $("#year").val();
-    var table = $("#table");
-    var graph = $("#graph");
     var output = $("#output");
 
     var formData = new FormData(form);
     var xhr = new XMLHttpRequest();
 
+    //If year is in between 2007 to 2009 execute this
     if(year == 2007 || year == 2008 || year == 2009){
-        
-        //console.log("Year selected is: " + year);
-        
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
-                //Display Title
+                //Display table
                 output.removeAttr("hidden");
                 output.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + xhr.responseText);
+                //Reset the form
                 form.reset();         
             }
         }
         xhr.open("POST", "/reqXml", true);  
         xhr.send(formData);
     }
+    //If year is in between 2010 to 2016 execute this
     else if(year == 2010 || year == 2011 || year == 2012 || year == 2013 
     || year == 2014 || year == 2015 || year == 2016){
         console.log("Year selected is: " + year);
 
-
         xhr.onreadystatechange = function(){
+
             if(xhr.readyState == 4 && xhr.status == 200){
-            xhr.responseText;
+            console.log(xhr.responseText);
             }
         }
         xhr.open("POST", "/reqJson", true);  
@@ -97,19 +100,45 @@ form.addEventListener("submit", function(e){ //When form is submitted
 //Check box validation
 wind.on('click', function(){
     if(wind.prop("checked") === false && radiation.prop("checked") === false){
-        $("#dataErrMsg").html("Please select at least 1 option").css("color", "red");
+        $("#measurementsErrMsg").html("Please select at least 1 option").css("color", "red");
     }else{
-        $("#dataErrMsg").html("");
+        $("#measurementsErrMsg").html("");
     }
 });
 
 radiation.on('click', function(){
     if(wind.prop("checked") === false && radiation.prop("checked") === false){
-        $("#dataErrMsg").html("Please select at least 1 option").css("color", "red");
+        $("#measurementsErrMsg").html("Please select at least 1 option").css("color", "red");
     }else{
-        $("#dataErrMsg").html("");
+        $("#measurementsErrMsg").html("");
+    }
+});
+
+table.on('click', function(){
+    if(table.prop("checked") === false && graph.prop("checked") === false){
+        $("#formatErrMsg").html("Please select at least 1 option").css("color", "red");
+    }else{
+        $("#formatErrMsg").html("");
+    }
+});
+
+graph.on('click', function(){
+    if(table.prop("checked") === false && graph.prop("checked") === false){
+        $("#formatErrMsg").html("Please select at least 1 option").css("color", "red");
+    }else{
+        $("#formatErrMsg").html("");
     }
 });
 
 //Start month and end month validation
-start.val()
+end.change(function(){
+    if(allMonths.indexOf(start.val()) > allMonths.indexOf(end.val())){
+        start.val(end.val());
+    }
+});
+
+start.change(function(){
+    if(allMonths.indexOf(end.val()) < allMonths.indexOf(start.val())){
+        end.val(start.val());
+    }
+});
