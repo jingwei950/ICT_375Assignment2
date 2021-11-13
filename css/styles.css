@@ -32,9 +32,8 @@ h3, input, label{
 #data tr:hover {background-color: #ddd;}
 
 #data th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
+  padding: 12px 20px 12px 20px;
+  text-align: center;
   background-color: #04AA6D;
   color: white;
 }

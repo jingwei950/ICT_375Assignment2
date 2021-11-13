@@ -23,11 +23,21 @@ form.addEventListener("submit", function(e){ //When form is submitted
 
     //If year is in between 2007 to 2009 execute this
     if(year == 2007 || year == 2008 || year == 2009){
+        console.log("Year selected is: " + year);
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
-                //Display table
-                output.removeAttr("hidden");
-                output.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + xhr.responseText);
+                //Check table checkbox
+                if(table.prop("checked") === true){
+                    console.log("Table checked: " + true);
+                    //Display table
+                    output.removeAttr("hidden");
+                    output.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + xhr.responseText);
+                }
+                else{
+                    output.attr("hidden", "hidden");
+                    console.log("Table checked: " + false);
+                }
+                
                 //Reset the form
                 form.reset();         
             }
@@ -39,11 +49,9 @@ form.addEventListener("submit", function(e){ //When form is submitted
     else if(year == 2010 || year == 2011 || year == 2012 || year == 2013 
     || year == 2014 || year == 2015 || year == 2016){
         console.log("Year selected is: " + year);
-
         xhr.onreadystatechange = function(){
-
             if(xhr.readyState == 4 && xhr.status == 200){
-            console.log(xhr.responseText);
+                console.log(xhr.responseText);
             }
         }
         xhr.open("POST", "/reqJson", true);  
@@ -80,13 +88,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
     //Get end month
     console.log(end.val());
 
-    //Check table checkbox
-    if(table.prop("checked") === true){
-        console.log("Table checked: " + true);
-    }
-    else{
-        console.log("Table checked: " + false);
-    }
+    
 
     //Check graph checkbox
     if(graph.prop("checked") === true){
