@@ -51,7 +51,20 @@ form.addEventListener("submit", function(e){ //When form is submitted
         console.log("Year selected is: " + year);
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
-                console.log(xhr.responseText);
+                //Check table checkbox
+                if(table.prop("checked") === true){
+                    console.log("Table checked: " + true);
+                    //Display table
+                    output.removeAttr("hidden");
+                    output.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + xhr.responseText);
+                }
+                else{
+                    output.attr("hidden", "hidden");
+                    console.log("Table checked: " + false);
+                }
+                
+                //Reset the form
+                form.reset();  
             }
         }
         xhr.open("POST", "/reqJson", true);  

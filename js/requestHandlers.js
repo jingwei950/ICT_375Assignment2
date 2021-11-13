@@ -316,29 +316,241 @@ function reqXml(response, request, pathName) {
 //Handle JSON request
 function reqJson(response, request, pathName) {
     var form = new formid.IncomingForm();
-
     //Parse form
     form.parse(request, function (error, field, file) {
-        var selectedYear = field.year;
-        console.log(year);
-        fs.readFile("./data/" + selectedYear + ".json", function (error, data) {
-            if (error) {
-                console.log("Error reading file");
-                response.writeHead(404, {
-                    "Content-Type": "text/html"
+        if (error) {
+            console.log("Error");
+        } else {
+            var selectedYear = field.year;
+            var selectedStartM = field.start;
+            var selectedEndM = field.end;
+            var wind = field.wind;
+            var radiation = field.radiation;
+
+            //XML URL link
+            var file_url = 'http://it.murdoch.edu.au/~S900432D/ict375/data/' + selectedYear + '.json';
+            var testXML = 'http://ceto.murdoch.edu.au/~34053405/ICT375/xml/2007test.xml'; //TO BE DELETED AFTER TEST
+
+            //Retrieve XML from link provided
+            http.get(file_url, function (urlRes) {
+                var data = '';
+
+                urlRes.on('data', function (chunk) {
+                    data += chunk;
                 });
-                response.write("404 not found \n");
-                response.end();
-            } else if (data) {
-                console.log("Successfully read " + selectedYear + ".json file");
-                response.writeHead(200, {
-                    "Content-Type": "text/html"
+
+                urlRes.on('end', function () {
+
+                    //Parse JSON data
+                    var resultJson = JSON.parse(data);
+
+                    //Shorten Object
+                    var records = resultJson.weather.record;
+
+                    //START OF processJSON()
+                    var processJSON = function (JSONRecords, startMonth, endMonth) {
+
+                        var monthNumber = [
+                            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+                        ];
+
+                        var requestedMonths = [];
+
+                        //Process range of month from what user select
+                        for (var j = monthNumber.indexOf(startMonth); j <= monthNumber.indexOf(endMonth); j++) {
+                            requestedMonths.push(monthNumber[j]); //Store requested range of months into array
+                        }
+                        console.log("Requested year: " + selectedYear);
+                        console.log("Requested range of months: " + requestedMonths);
+                        //Process object retrieved from URL, convert dates with respective months, WS and SR to number
+                        let result2 = JSONRecords.map(function (value) {
+                            if (value.date.includes("/01/")) {
+                                value.date = 'Jan',
+                                    value.ws = Number(value.ws), //Convert string to number
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/02/")) {
+                                value.date = 'Feb',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/03/")) {
+                                value.date = 'Mar',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/04/")) {
+                                value.date = 'Apr',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/05/")) {
+                                value.date = 'May',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/06/")) {
+                                value.date = 'Jun',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/07/")) {
+                                value.date = 'Jul',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/08/")) {
+                                value.date = 'Aug',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/09/")) {
+                                value.date = 'Sep',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/10/")) {
+                                value.date = 'Oct',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/11/")) {
+                                value.date = 'Nov',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                            if (value.date.includes("/12/")) {
+                                value.date = 'Dec',
+                                    value.ws = Number(value.ws),
+                                    value.sr = Number(value.sr),
+                                    delete value.time
+                                return value
+                            }
+                        });
+                        
+                        //Remove object property value of array to just value, convert 'Date' to 'Month'
+                        let result3 = result2.map(function (r) {
+                            return {
+                                Month: r.date.toString(), //Convert from array to string
+                                Ws: Number(r.ws),
+                                Sr: Number(r.sr)
+                            }; //Convert Object property array
+                        });
+
+                        //Average array to store calculated records
+                        let avgArray = [];
+                        //Calculate average of WindSpeed and Solar Radiation and convert it
+                        result3.reduce(function (res, {Month, Ws, Sr}) {
+                            //If there is no such month exist in array push empty record
+                            if (!res[Month]) {
+                                res[Month] = {
+                                    Month: Month,
+                                    Count: 0,
+                                    WsAvg: 0,
+                                    WsSum: 0,
+                                    SrAvg: 0,
+                                    SrSum: 0
+                                };
+                                avgArray.push(res[Month]);
+                            }
+                            //If there is month exist append these
+                            res[Month].Count += 1;
+                            res[Month].WsSum += Ws;
+                            res[Month].WsAvg = (res[Month].WsSum / res[Month].Count) * 3.6; //Convert m/s to km/h
+                            res[Month].SrSum += Sr;
+                            res[Month].SrAvg = (res[Month].SrSum / res[Month].Count) / 1000; //COnvert W/m^2 to kWh/m^2
+                            return res;
+                        }, {});
+
+                        //Find months in XML that does not exist append that month, Ws and Sr with value of 0
+                        let result5 = monthNumber.map(function(m){ 
+                            return avgArray.find(function(a){ 
+                                if(a.Month != undefined && a.Month != null){
+                                    return a.Month === m
+                                }
+                            })||{Month: m, Ws: Number(0), Sr: Number(0)} //If undefined is returned make Avg 0 (Which XML retrieved does not have some specific months) 
+                        });
+
+                        //Table heads
+                        var table = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
+                        '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
+                        
+                        if(wind === "on"){ //If wind speed checkbox is checked, generate ws data
+                            table += '<tr><td>Wind Speed (km/h)</td>';
+                            //Generate table data for Wind Speed
+                            result5.filter(function(item) {
+                                if(requestedMonths.includes(item.Month)){
+                                    if(item.WsAvg == undefined){ //If it contains undefined 
+                                        table += "<td>0</td>";
+                                    }
+                                    else{
+                                        table += "<td>"+ item.WsAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                                    }
+                                }
+                                else{
+                                    table += "<td></td>";
+                                };
+                            });
+                            table += '</tr>';
+                        }   
+
+                        if(radiation === 'on'){ //If solar radiation checkbox is checked, generate sr data
+                            //Generate table data for Solar Radiation
+                            table += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
+                            result5.filter(function(item) {
+                                if(requestedMonths.includes(item.Month)){
+                                    if(item.WsAvg == undefined){ //If it contains undefined 
+                                        table += "<td>0</td>";
+                                    }
+                                    else{
+                                        table += "<td>"+ item.SrAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                                    }
+                                }
+                                else{
+                                    table += "<td></td>";
+                                };
+                                return  
+                            });
+                            table += "</tr>";
+                        }
+                        table += "</table>";
+                        console.log(table);
+                        return table; //Return the result of table
+                    }
+                    // END OF processJSON()
+
+                    response.writeHead(200, {"Content-Type": "text/css"});
+                    response.write(processJSON(records, selectedStartM, selectedEndM));
+                    response.end();
                 });
-                // response.write(data);
-                response.write("Success");
-                response.end();
-            }
-        });
+            })
+            .on('error', function (err) {
+                console.log("Error");
+            });
+        }
     });
 }
 
