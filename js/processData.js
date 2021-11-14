@@ -274,8 +274,8 @@ function processJSON (JSONRecords, startMonth, endMonth , selectedYear) {
                 Count: 0,
                 WsAvg: 0,
                 WsSum: 0,
-                SrAvg: 0,
-                SrSum: 0
+                SrSum: 0,
+                SrTotal: 0,
             };
             avgArray.push(res[Month]);
         }
@@ -284,7 +284,7 @@ function processJSON (JSONRecords, startMonth, endMonth , selectedYear) {
         res[Month].WsSum += Ws;
         res[Month].WsAvg = (res[Month].WsSum / res[Month].Count) * 3.6; //Convert m/s to km/h
         res[Month].SrSum += Sr;
-        res[Month].SrAvg = (res[Month].SrSum / res[Month].Count); //Convert W/m^2 to kWh/m^2
+        res[Month].SrTotal = res[Month].SrSum / 1000 //Convert W/m^2 to kWh/m^2
         return res;
     }, {});
 
@@ -296,7 +296,7 @@ function processJSON (JSONRecords, startMonth, endMonth , selectedYear) {
             }
         })||{Month: m, Count: Number(0),
             WsSum: Number(0), WsAvg: Number(0), 
-            SrSum: Number(0), SrAvg: Number(0)} //If undefined is returned make Avg 0 (Which XML retrieved does not have some specific months) 
+            SrSum: Number(0), SrTotal: Number(0)} //If undefined is returned make Avg 0 (Which XML retrieved does not have some specific months) 
     });
 
     var finalResult = JSON.stringify(result5);
