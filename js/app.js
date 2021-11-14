@@ -75,11 +75,11 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         tableData += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
                         xmlData.filter(function(item) {
                             if(requestedMonths.includes(item.Month)){
-                                if(item.SrAvg == undefined){ //If Ws contains undefined, show no data
+                                if(item.SrTotal == undefined){ //If Ws contains undefined, show no data
                                     tableData += "<td>0</td>";
                                 }
                                 else{
-                                    tableData += "<td>"+ item.SrAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                                    tableData += "<td>"+ item.SrTotal.toFixed(2) +"</td>"; //Round off to 2 decimal places
                                 }
                             }
                             else{
@@ -107,9 +107,9 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         xmlData[8].WsAvg, xmlData[9].WsAvg, xmlData[10].WsAvg, xmlData[11].WsAvg
                     ];
                     var srData = [
-                        xmlData[0].SrAvg, xmlData[1].SrAvg, xmlData[2].SrAvg, xmlData[3].SrAvg, 
-                        xmlData[4].SrAvg, xmlData[5].SrAvg, xmlData[6].SrAvg, xmlData[7].SrAvg, 
-                        xmlData[8].SrAvg, xmlData[9].SrAvg, xmlData[10].SrAvg, xmlData[11].SrAvg
+                        xmlData[0].SrTotal, xmlData[1].SrTotal, xmlData[2].SrTotal, xmlData[3].SrTotal, 
+                        xmlData[4].SrTotal, xmlData[5].SrTotal, xmlData[6].SrTotal, xmlData[7].SrTotal, 
+                        xmlData[8].SrTotal, xmlData[9].SrTotal, xmlData[10].SrTotal, xmlData[11].SrTotal
                     ]
                 
                     if(myChart){//If there is chart
