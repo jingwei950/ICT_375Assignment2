@@ -104,6 +104,7 @@ function reqXml(response, request, pathName) {
                             //Shorten Object
                             var records = result.weather.record;
 
+                            //Send response back
                             response.writeHead(200, {"Content-Type": "text/css"});
                             response.write(processData.processXML(records, selectedStartM, selectedEndM, selectedYear));
                             response.end();
@@ -152,8 +153,9 @@ function reqJson(response, request, pathName) {
                     //Shorten Object
                     var records = resultJson.weather.record;
 
+                    //Send response back
                     response.writeHead(200, {"Content-Type": "text/css"});
-                    response.write(processJSON(records, selectedStartM, selectedEndM, selectedYear));
+                    response.write(processData.processJSON(records, selectedStartM, selectedEndM, selectedYear));
                     response.end();
                 });
             })
