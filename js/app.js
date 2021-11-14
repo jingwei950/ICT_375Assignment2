@@ -90,12 +90,10 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         tableData += "</tr>";
                     }
                     tableData += "</table>";
-                    console.log(tableData);
                     tableOutput.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);                 
                 }
                 else{
-                    tableOutput.attr("hidden", "hidden");  
-                     
+                    tableOutput.attr("hidden", "hidden");                       
                 }              
                 
                 //If graph checkbox is checked, display chart data
@@ -129,8 +127,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                                         backgroundColor:[
                                             'rgba(54,162,235,0.6)'
                                         ],
-                                        borderWidth: 1,
-                                        // lineWidth: 5,
+                                        borderWidth: 5,
                                         borderColor: 'rgba(54,162,235,0.6)',
                                         tension: 0.4,
                                         fill: true
@@ -143,7 +140,6 @@ form.addEventListener("submit", function(e){ //When form is submitted
                                             'rgba(255,159,64,0.6)',
                                         ],
                                         borderWidth: 5,
-                                        // lineWidth: 5,
                                         borderColor:'rgba(255,159,64,0.6)',
                                         tension: 0.4,
                                         fill: true
@@ -196,7 +192,6 @@ form.addEventListener("submit", function(e){ //When form is submitted
                                         'rgba(54,162,235,0.6)'
                                     ],
                                     borderWidth: 5,
-                                    // lineWidth: 5,
                                     borderColor: 'rgba(54,162,235,0.6)',
                                     tension: 0.4,
                                     fill: true
@@ -209,7 +204,6 @@ form.addEventListener("submit", function(e){ //When form is submitted
                                         'rgba(255,159,64,0.6)'
                                     ],
                                     borderWidth: 5,
-                                    // lineWidth: 5,
                                     borderColor:'rgba(255,159,64,0.6)',
                                     tension: 0.4,
                                     fill: true

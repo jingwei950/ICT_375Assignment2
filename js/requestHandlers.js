@@ -252,52 +252,6 @@ function reqXml(response, request, pathName) {
                                         WsSum: Number(0), WsAvg: Number(0), 
                                         SrSum: Number(0), SrAvg: Number(0)} //If undefined is returned make Avg 0 (Which XML retrieved does not have some specific months) 
                                 });
-
-                                // //Table heads
-                                // var table = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
-                                // '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
-                                
-                                // if(wind === "on"){ //If wind speed checkbox is checked, generate ws data
-                                //     table += '<tr><td>Wind Speed (km/h)</td>';
-                                //     //Generate table data for Wind Speed
-                                //     result5.filter(function(item) {
-                                //         if(requestedMonths.includes(item.Month)){
-                                //             if(item.WsAvg == undefined){ //If it contains undefined 
-                                //                 table += "<td>0</td>";
-                                //             }
-                                //             else{
-                                //                 table += "<td>"+ item.WsAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
-                                //             }
-                                //         }
-                                //         else{
-                                //             table += "<td></td>";
-                                //         };
-                                //     });
-                                //     table += '</tr>';
-                                // }   
-
-                                // if(radiation === 'on'){ //If solar radiation checkbox is checked, generate sr data
-                                //     //Generate table data for Solar Radiation
-                                //     table += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
-                                //     result5.filter(function(item) {
-                                //         if(requestedMonths.includes(item.Month)){
-                                //             if(item.WsAvg == undefined){ //If it contains undefined 
-                                //                 table += "<td>0</td>";
-                                //             }
-                                //             else{
-                                //                 table += "<td>"+ item.SrAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
-                                //             }
-                                //         }
-                                //         else{
-                                //             table += "<td></td>";
-                                //         };
-                                //         return  
-                                //     });
-                                //     table += "</tr>";
-                                // }
-                                // table += "</table>";
-                                // console.log(table);
-                                // console.log(result5);
                                 var finalResult = JSON.stringify(result5);
                                 // console.log(finalResult);
                                 return finalResult; //Return the result of table
