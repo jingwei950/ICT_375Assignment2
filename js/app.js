@@ -30,7 +30,6 @@ form.addEventListener("submit", function(e){ //When form is submitted
     for (var j = monthNumber.indexOf(start.val()); j <= monthNumber.indexOf(end.val()); j++) {
         requestedMonths.push(monthNumber[j]); //Store requested range of months into array
     }
-    console.log(requestedMonths);
 
     var formData = new FormData(form);
     var xhr = new XMLHttpRequest();
@@ -40,8 +39,9 @@ form.addEventListener("submit", function(e){ //When form is submitted
         console.log("Year selected is: " + year);
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
-                var xmlData = JSON.parse(xhr.responseText);          
-                //Check table checkbox
+                var xmlData = JSON.parse(xhr.responseText);  
+
+                //If table checkbox is checked, display data on table
                 if(table.prop("checked") === true){
 
                     //Display table
@@ -91,22 +91,18 @@ form.addEventListener("submit", function(e){ //When form is submitted
                     }
                     tableData += "</table>";
                     console.log(tableData);
-                    tableOutput.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);
-                    //Reset the form
-                    form.reset();  
+                    tableOutput.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);                 
                 }
                 else{
                     tableOutput.attr("hidden", "hidden");  
-                    //Reset the form
-                    form.reset();  
-                }
-                if(graph.prop("checked") === true){ //For chart.js 
-                    
-                    graphOutput.removeAttr("hidden");
-                    // myChart.removeAttr("hidden");                   
+                     
+                }              
+                
+                //If graph checkbox is checked, display chart data
+                if(graph.prop("checked") === true){ 
+                    console.log("Graph checked")
+                    graphOutput.removeAttr("hidden");                   
                     // graphOutput.html("<h3>Graph</h3>");
-                    console.log(xmlData[0].Month);
-                    console.log(xmlData[0].WsAvg);
                     var wsData = [
                         xmlData[0].WsAvg, xmlData[1].WsAvg, xmlData[2].WsAvg, xmlData[3].WsAvg, 
                         xmlData[4].WsAvg, xmlData[5].WsAvg, xmlData[6].WsAvg, xmlData[7].WsAvg, 
@@ -117,8 +113,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         xmlData[4].SrAvg, xmlData[5].SrAvg, xmlData[6].SrAvg, xmlData[7].SrAvg, 
                         xmlData[8].SrAvg, xmlData[9].SrAvg, xmlData[10].SrAvg, xmlData[11].SrAvg
                     ]
-
-                    if(myChart){        //If there is chart
+                
+                    if(myChart){//If there is chart
                         ctx.destroy();  //Destroy previous chart
                         
                         new Chart(ctx,  //Create new chart
@@ -248,10 +244,10 @@ form.addEventListener("submit", function(e){ //When form is submitted
                     }   
                 }
                 else{
-                    lineGraph.destroy();
                     graphOutput.attr("hidden", "hidden");
-                    myChart.attr("hidden", "hidden");
-                }    
+                } 
+                //Reset the form after data displayed
+                form.reset();  
             }
         }
         xhr.open("POST", "/reqXml", true);  
