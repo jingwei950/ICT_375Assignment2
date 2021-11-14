@@ -16,7 +16,21 @@ form.addEventListener("submit", function(e){ //When form is submitted
     e.preventDefault();
     
     var year = $("#year").val();
-    var output = $("#output");
+    var tableOutput = $("#tableOutput");
+    var graphOutput = $("#graphOutput");
+
+    var monthNumber = [
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    
+
+    var requestedMonths = [];
+    //Process range of month from what user select
+    for (var j = monthNumber.indexOf(start.val()); j <= monthNumber.indexOf(end.val()); j++) {
+        requestedMonths.push(monthNumber[j]); //Store requested range of months into array
+    }
+    console.log(requestedMonths);
 
     var formData = new FormData(form);
     var xhr = new XMLHttpRequest();
@@ -26,24 +40,224 @@ form.addEventListener("submit", function(e){ //When form is submitted
         console.log("Year selected is: " + year);
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
+                var xmlData = JSON.parse(xhr.responseText);          
                 //Check table checkbox
                 if(table.prop("checked") === true){
-                    console.log("Table checked: " + true);
+
                     //Display table
-                    output.removeAttr("hidden");
-                    output.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + xhr.responseText);
+                    tableOutput.removeAttr("hidden");                    
+                  
+                   var tableData = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
+                    '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
+
+                    //If wind speed checkbox is checked, generate ws data
+                    if(wind.prop("checked") === true){ 
+                        tableData += '<tr><td>Wind Speed (km/h)</td>';
+                        //Generate table data for Wind Speed
+                        xmlData.filter(function(item) {
+                            if(requestedMonths.includes(item.Month)){
+                                if(item.WsAvg == undefined){ //If Ws contains undefined, show no data
+                                    tableData += "<td>0</td>";
+                                }
+                                else{
+                                    tableData += "<td>"+ item.WsAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                                }
+                            }
+                            else{
+                                tableData += "<td></td>";
+                            };
+                        });
+                        tableData += '</tr>';                      
+                    }   
+
+                    if(radiation.prop("checked") === true){ //If solar radiation checkbox is checked, generate sr data
+                        //Generate table data for Solar Radiation
+                        tableData += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
+                        xmlData.filter(function(item) {
+                            if(requestedMonths.includes(item.Month)){
+                                if(item.SrAvg == undefined){ //If Ws contains undefined, show no data
+                                    tableData += "<td>0</td>";
+                                }
+                                else{
+                                    tableData += "<td>"+ item.SrAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                                }
+                            }
+                            else{
+                                tableData += "<td></td>";
+                            };
+                            return  
+                        });
+                        tableData += "</tr>";
+                    }
+                    tableData += "</table>";
+                    console.log(tableData);
+                    tableOutput.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);
+                    //Reset the form
+                    form.reset();  
                 }
                 else{
-                    output.attr("hidden", "hidden");
-                    console.log("Table checked: " + false);
+                    tableOutput.attr("hidden", "hidden");  
+                    //Reset the form
+                    form.reset();  
                 }
-                
-                //Reset the form
-                form.reset();         
+                if(graph.prop("checked") === true){ //For chart.js 
+                    
+                    graphOutput.removeAttr("hidden");
+                    // myChart.removeAttr("hidden");                   
+                    // graphOutput.html("<h3>Graph</h3>");
+                    console.log(xmlData[0].Month);
+                    console.log(xmlData[0].WsAvg);
+                    var wsData = [
+                        xmlData[0].WsAvg, xmlData[1].WsAvg, xmlData[2].WsAvg, xmlData[3].WsAvg, 
+                        xmlData[4].WsAvg, xmlData[5].WsAvg, xmlData[6].WsAvg, xmlData[7].WsAvg, 
+                        xmlData[8].WsAvg, xmlData[9].WsAvg, xmlData[10].WsAvg, xmlData[11].WsAvg
+                    ];
+                    var srData = [
+                        xmlData[0].SrAvg, xmlData[1].SrAvg, xmlData[2].SrAvg, xmlData[3].SrAvg, 
+                        xmlData[4].SrAvg, xmlData[5].SrAvg, xmlData[6].SrAvg, xmlData[7].SrAvg, 
+                        xmlData[8].SrAvg, xmlData[9].SrAvg, xmlData[10].SrAvg, xmlData[11].SrAvg
+                    ]
+
+                    if(myChart){        //If there is chart
+                        ctx.destroy();  //Destroy previous chart
+                        
+                        new Chart(ctx,  //Create new chart
+                            {
+                                type: "line",
+                                data: {
+                                    labels: requestedMonths,
+                                    datasets: [{
+                                        label: "Wind Speed",
+                                        yAxisID: 'Ws',
+                                        data: wsData,
+                                        backgroundColor:[
+                                            'rgba(54,162,235,0.6)'
+                                        ],
+                                        borderWidth: 1,
+                                        // lineWidth: 5,
+                                        borderColor: 'rgba(54,162,235,0.6)',
+                                        tension: 0.4,
+                                        fill: true
+                                    },
+                                    {
+                                        label: "Solar Radiation",
+                                        yAxisID: 'Sr',
+                                        data: srData,
+                                        backgroundColor:[
+                                            'rgba(255,159,64,0.6)',
+                                        ],
+                                        borderWidth: 5,
+                                        // lineWidth: 5,
+                                        borderColor:'rgba(255,159,64,0.6)',
+                                        tension: 0.4,
+                                        fill: true
+                                    }],
+                                    
+                                },
+                                options: {
+                                    bezierCurve: true,
+                                    legend: {display: true},
+                                    title: {
+                                        display: true,
+                                        text: 'Test'
+                                    },
+                                    scales:{
+                                        Ws:{
+                                            type: 'linear',
+                                            position: 'left'
+                                        },
+                                        Sr:{
+                                            type: 'linear',
+                                            position: 'right',
+                                            grid: {
+                                                display: false
+                                            },
+                                            ticks: {
+                                                max: 50,
+                                                min: 0
+                                            }
+                                        }
+                                    }
+                                }
+                            }); 
+                    }
+                    else{ //If no chart exist 
+                        graphOutput.html('<h3>Graph</h3>' + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
+                        var myChart = document.getElementById("myChart");
+                        myChart.removeAttribute("hidden");
+                        var ctx =  myChart.getContext("2d");
+
+                        new Chart(ctx,
+                        {
+                            type: "line",
+                            data: {
+                                labels: requestedMonths,
+                                datasets: [{
+                                    label: "Wind Speed",
+                                    yAxisID: 'Ws',
+                                    data: wsData,
+                                    backgroundColor:[
+                                        'rgba(54,162,235,0.6)'
+                                    ],
+                                    borderWidth: 5,
+                                    // lineWidth: 5,
+                                    borderColor: 'rgba(54,162,235,0.6)',
+                                    tension: 0.4,
+                                    fill: true
+                                },
+                                {
+                                    label: "Solar Radiation",
+                                    yAxisID: 'Sr',
+                                    data: srData,
+                                    backgroundColor:[
+                                        'rgba(255,159,64,0.6)'
+                                    ],
+                                    borderWidth: 5,
+                                    // lineWidth: 5,
+                                    borderColor:'rgba(255,159,64,0.6)',
+                                    tension: 0.4,
+                                    fill: true
+                                }]
+                            },
+                            options: {
+                                bezierCurve: true,
+                                legend: {display: true},
+                                title: {
+                                    display: true,
+                                    text: 'Test'
+                                },
+                                scales:{
+                                    Ws:{
+                                        type: 'linear',
+                                        position: 'left'
+                                    },
+                                    Sr:{
+                                        type: 'linear',
+                                        position: 'right',
+                                        grid: {
+                                            display: false
+                                        },
+                                        ticks: {
+                                            max: 50,
+                                            min: 0
+                                        }
+                                    }
+                                }
+                            }
+                        });  
+                    }   
+                }
+                else{
+                    lineGraph.destroy();
+                    graphOutput.attr("hidden", "hidden");
+                    myChart.attr("hidden", "hidden");
+                }    
             }
         }
         xhr.open("POST", "/reqXml", true);  
         xhr.send(formData);
+
+        
     }
     //If year is in between 2010 to 2016 execute this
     else if(year == 2010 || year == 2011 || year == 2012 || year == 2013 
@@ -52,17 +266,66 @@ form.addEventListener("submit", function(e){ //When form is submitted
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
                 //Check table checkbox
+                var jsonData = JSON.parse(xhr.responseText);
+                //Check table checkbox
                 if(table.prop("checked") === true){
                     console.log("Table checked: " + true);
                     //Display table
-                    output.removeAttr("hidden");
-                    output.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + xhr.responseText);
+                    tableOutput.removeAttr("hidden");                    
+                    // console.log(jsonData[0].Month);
+                  
+                   var tableData = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
+                    '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
+
+                    //If wind speed checkbox is checked, generate ws data
+                    if(wind.prop("checked") === true){ 
+                        tableData += '<tr><td>Wind Speed (km/h)</td>';
+                        //Generate table data for Wind Speed
+                        jsonData.filter(function(item) {
+                            if(requestedMonths.includes(item.Month)){
+                                if(item.WsAvg == undefined){ //If Ws contains undefined, show no data
+                                    tableData += "<td>0</td>";
+                                }
+                                else{
+                                    tableData += "<td>"+ item.WsAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                                }
+                            }
+                            else{
+                                tableData += "<td></td>";
+                            };
+                        });
+                        tableData += '</tr>';                      
+                    }   
+
+                    if(radiation.prop("checked") === true){ //If solar radiation checkbox is checked, generate sr data
+                        //Generate table data for Solar Radiation
+                        tableData += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
+                        jsonData.filter(function(item) {
+                            if(requestedMonths.includes(item.Month)){
+                                if(item.SrAvg == undefined){ //If Ws contains undefined, show no data
+                                    tableData += "<td>0</td>";
+                                }
+                                else{
+                                    tableData += "<td>"+ item.SrAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                                }
+                            }
+                            else{
+                                tableData += "<td></td>";
+                            };
+                            return  
+                        });
+                        tableData += "</tr>";
+                    }
+                    tableData += "</table>";
+                    console.log(tableData);
+                    tableOutput.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);
                 }
-                else{
-                    output.attr("hidden", "hidden");
-                    console.log("Table checked: " + false);
+                else{ //For chart.js
+                    console.log(jsonData);    
+                    console.log("Table checked: " + false);                
+                    graphOutput.attr("hidden");    
+                    // console.log(jsonData.)                                 
                 }
-                
                 //Reset the form
                 form.reset();  
             }
@@ -101,7 +364,13 @@ form.addEventListener("submit", function(e){ //When form is submitted
     //Get end month
     console.log(end.val());
 
-    
+    //Check table checkbox
+    if(table.prop("checked") === true){
+        console.log("Table checked: " + true);
+    }
+    else{
+        console.log("Table checked: " + false);
+    }
 
     //Check graph checkbox
     if(graph.prop("checked") === true){
@@ -111,6 +380,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
         console.log("Graph checked: " + false);
     }
 });
+
+//Chart.js data
 
 //Check box validation
 wind.on('click', function(){

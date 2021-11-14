@@ -238,7 +238,7 @@ function reqXml(response, request, pathName) {
                                     res[Month].WsSum += Ws;
                                     res[Month].WsAvg = (res[Month].WsSum / res[Month].Count) * 3.6; //Convert m/s to km/h
                                     res[Month].SrSum += Sr;
-                                    res[Month].SrAvg = (res[Month].SrSum / res[Month].Count) / 1000; //COnvert W/m^2 to kWh/m^2
+                                    res[Month].SrAvg = (res[Month].SrSum / res[Month].Count); //COnvert W/m^2 to kWh/m^2
                                     return res;
                                 }, {});
 
@@ -248,54 +248,59 @@ function reqXml(response, request, pathName) {
                                         if(a.Month != undefined && a.Month != null){
                                             return a.Month === m
                                         }
-                                    })||{Month: m, Ws: Number(0), Sr: Number(0)} //If undefined is returned make Avg 0 (Which XML retrieved does not have some specific months) 
+                                    })||{Month: m, Count: Number(0),
+                                        WsSum: Number(0), WsAvg: Number(0), 
+                                        SrSum: Number(0), SrAvg: Number(0)} //If undefined is returned make Avg 0 (Which XML retrieved does not have some specific months) 
                                 });
 
-                                //Table heads
-                                var table = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
-                                '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
+                                // //Table heads
+                                // var table = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
+                                // '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
                                 
-                                if(wind === "on"){ //If wind speed checkbox is checked, generate ws data
-                                    table += '<tr><td>Wind Speed (km/h)</td>';
-                                    //Generate table data for Wind Speed
-                                    result5.filter(function(item) {
-                                        if(requestedMonths.includes(item.Month)){
-                                            if(item.WsAvg == undefined){ //If it contains undefined 
-                                                table += "<td>0</td>";
-                                            }
-                                            else{
-                                                table += "<td>"+ item.WsAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
-                                            }
-                                        }
-                                        else{
-                                            table += "<td></td>";
-                                        };
-                                    });
-                                    table += '</tr>';
-                                }   
+                                // if(wind === "on"){ //If wind speed checkbox is checked, generate ws data
+                                //     table += '<tr><td>Wind Speed (km/h)</td>';
+                                //     //Generate table data for Wind Speed
+                                //     result5.filter(function(item) {
+                                //         if(requestedMonths.includes(item.Month)){
+                                //             if(item.WsAvg == undefined){ //If it contains undefined 
+                                //                 table += "<td>0</td>";
+                                //             }
+                                //             else{
+                                //                 table += "<td>"+ item.WsAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                                //             }
+                                //         }
+                                //         else{
+                                //             table += "<td></td>";
+                                //         };
+                                //     });
+                                //     table += '</tr>';
+                                // }   
 
-                                if(radiation === 'on'){ //If solar radiation checkbox is checked, generate sr data
-                                    //Generate table data for Solar Radiation
-                                    table += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
-                                    result5.filter(function(item) {
-                                        if(requestedMonths.includes(item.Month)){
-                                            if(item.WsAvg == undefined){ //If it contains undefined 
-                                                table += "<td>0</td>";
-                                            }
-                                            else{
-                                                table += "<td>"+ item.SrAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
-                                            }
-                                        }
-                                        else{
-                                            table += "<td></td>";
-                                        };
-                                        return  
-                                    });
-                                    table += "</tr>";
-                                }
-                                table += "</table>";
-                                console.log(table);
-                                return table; //Return the result of table
+                                // if(radiation === 'on'){ //If solar radiation checkbox is checked, generate sr data
+                                //     //Generate table data for Solar Radiation
+                                //     table += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
+                                //     result5.filter(function(item) {
+                                //         if(requestedMonths.includes(item.Month)){
+                                //             if(item.WsAvg == undefined){ //If it contains undefined 
+                                //                 table += "<td>0</td>";
+                                //             }
+                                //             else{
+                                //                 table += "<td>"+ item.SrAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                                //             }
+                                //         }
+                                //         else{
+                                //             table += "<td></td>";
+                                //         };
+                                //         return  
+                                //     });
+                                //     table += "</tr>";
+                                // }
+                                // table += "</table>";
+                                // console.log(table);
+                                // console.log(result5);
+                                var finalResult = JSON.stringify(result5);
+                                // console.log(finalResult);
+                                return finalResult; //Return the result of table
                             }
                             // END OF processXML()
 
@@ -450,7 +455,7 @@ function reqJson(response, request, pathName) {
                                 return value
                             }
                         });
-                        
+
                         //Remove object property value of array to just value, convert 'Date' to 'Month'
                         let result3 = result2.map(function (r) {
                             return {
@@ -481,7 +486,7 @@ function reqJson(response, request, pathName) {
                             res[Month].WsSum += Ws;
                             res[Month].WsAvg = (res[Month].WsSum / res[Month].Count) * 3.6; //Convert m/s to km/h
                             res[Month].SrSum += Sr;
-                            res[Month].SrAvg = (res[Month].SrSum / res[Month].Count) / 1000; //COnvert W/m^2 to kWh/m^2
+                            res[Month].SrAvg = (res[Month].SrSum / res[Month].Count); //Convert W/m^2 to kWh/m^2
                             return res;
                         }, {});
 
@@ -491,54 +496,58 @@ function reqJson(response, request, pathName) {
                                 if(a.Month != undefined && a.Month != null){
                                     return a.Month === m
                                 }
-                            })||{Month: m, Ws: Number(0), Sr: Number(0)} //If undefined is returned make Avg 0 (Which XML retrieved does not have some specific months) 
+                            })||{Month: m, Count: Number(0),
+                                WsSum: Number(0), WsAvg: Number(0), 
+                                SrSum: Number(0), SrAvg: Number(0)} //If undefined is returned make Avg 0 (Which XML retrieved does not have some specific months) 
                         });
 
-                        //Table heads
-                        var table = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
-                        '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
+                        // //Table heads
+                        // var table = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
+                        // '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
                         
-                        if(wind === "on"){ //If wind speed checkbox is checked, generate ws data
-                            table += '<tr><td>Wind Speed (km/h)</td>';
-                            //Generate table data for Wind Speed
-                            result5.filter(function(item) {
-                                if(requestedMonths.includes(item.Month)){
-                                    if(item.WsAvg == undefined){ //If it contains undefined 
-                                        table += "<td>0</td>";
-                                    }
-                                    else{
-                                        table += "<td>"+ item.WsAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
-                                    }
-                                }
-                                else{
-                                    table += "<td></td>";
-                                };
-                            });
-                            table += '</tr>';
-                        }   
+                        // if(wind === "on"){ //If wind speed checkbox is checked, generate ws data
+                        //     table += '<tr><td>Wind Speed (km/h)</td>';
+                        //     //Generate table data for Wind Speed
+                        //     result5.filter(function(item) {
+                        //         if(requestedMonths.includes(item.Month)){
+                        //             if(item.WsAvg == undefined){ //If it contains undefined 
+                        //                 table += "<td>0</td>";
+                        //             }
+                        //             else{
+                        //                 table += "<td>"+ item.WsAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                        //             }
+                        //         }
+                        //         else{
+                        //             table += "<td></td>";
+                        //         };
+                        //     });
+                        //     table += '</tr>';
+                        // }   
 
-                        if(radiation === 'on'){ //If solar radiation checkbox is checked, generate sr data
-                            //Generate table data for Solar Radiation
-                            table += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
-                            result5.filter(function(item) {
-                                if(requestedMonths.includes(item.Month)){
-                                    if(item.WsAvg == undefined){ //If it contains undefined 
-                                        table += "<td>0</td>";
-                                    }
-                                    else{
-                                        table += "<td>"+ item.SrAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
-                                    }
-                                }
-                                else{
-                                    table += "<td></td>";
-                                };
-                                return  
-                            });
-                            table += "</tr>";
-                        }
-                        table += "</table>";
-                        console.log(table);
-                        return table; //Return the result of table
+                        // if(radiation === 'on'){ //If solar radiation checkbox is checked, generate sr data
+                        //     //Generate table data for Solar Radiation
+                        //     table += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
+                        //     result5.filter(function(item) {
+                        //         if(requestedMonths.includes(item.Month)){
+                        //             if(item.WsAvg == undefined){ //If it contains undefined 
+                        //                 table += "<td>0</td>";
+                        //             }
+                        //             else{
+                        //                 table += "<td>"+ item.SrAvg.toFixed(2) +"</td>"; //Round off to 2 decimal places
+                        //             }
+                        //         }
+                        //         else{
+                        //             table += "<td></td>";
+                        //         };
+                        //         return  
+                        //     });
+                        //     table += "</tr>";
+                        // }
+                        // table += "</table>";
+                        // console.log(table);
+                        var finalResult = JSON.stringify(result5);
+                        return finalResult; //Return the result of table
+                        // return result5; //Return the result of table
                     }
                     // END OF processJSON()
 
