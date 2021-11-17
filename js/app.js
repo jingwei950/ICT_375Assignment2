@@ -370,7 +370,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                             }); 
                     }
                     else{ //If no chart exist 
-                        graphOutput.html('<h2 class="underline">Graph</h2>' + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
+                        graphOutput.html('<h2 class="underline">Graphfor '+ start.val() + ' to ' + end.val() + ' of year ' + year + '</h2>' 
+                        + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
                         var myChart = document.getElementById("myChart");
                         myChart.removeAttribute("hidden");
                         var ctx =  myChart.getContext("2d");
