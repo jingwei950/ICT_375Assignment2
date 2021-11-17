@@ -1,6 +1,5 @@
 "use strict";
 const fs = require("fs");
-const xmldom = require('xmldom').DOMParser;
 const formid = require("formidable");
 const http = require('http');
 const xml2js = require('xml2js');
@@ -10,27 +9,24 @@ const processData = require('./processData');
 //Handle start request
 function reqStart(response, request, pathName) {
 
-    if (pathName === "/") {
-        pathName = "/index";
-        fs.readFile("./html" + pathName + ".html", function (error, data) {
-            if (error) {
-                console.log("Error 1");
-                response.writeHead(404, {
-                    "Content-Type": "text/html"
-                });
-                response.write("404 not found \n");
-                response.end();
-            }
-            if (data) {
-                console.log("Request handler 'start' was called");
-                response.writeHead(200, {
-                    "Content-Type": "text/html"
-                });
-                response.write(data);
-                response.end();
-            }
-        });
-    }
+    fs.readFile("./html/index.html", function (error, data) {
+        if (error) {
+            console.log("Error");
+            response.writeHead(404, {
+                "Content-Type": "text/html"
+            });
+            response.write("404 not found \n");
+            response.end();
+        }
+        else if (data) {
+            console.log("Request handler 'start' was called");
+            response.writeHead(200, {
+                "Content-Type": "text/html"
+            });
+            response.write(data);
+            response.end();
+        }
+    });
 }
 
 //Handle JavaScript request

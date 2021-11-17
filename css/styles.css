@@ -1,15 +1,55 @@
+body{
+  color: #40514E;
+  margin: 0;
+  text-align: center;
+  font-family: 'Merriweather', serif;
+}
 /* Div styles start */
 #body{
+  margin:auto;
   width: 50%;
-  padding-left: 25%;
 }
 
 #measurements, #date, #format{
-  background-color: silver;
+  background-color: #EAF6F6;
   padding: 10px;
   margin-bottom: 20px;
 }
+
+/* underline for result title */
+.underline{
+  text-decoration:underline;
+  text-decoration-thickness: 2px;
+}
 /* Div styles end */
+
+#top{
+  background-color: #EAF6F6;
+  position:relative;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+h1{
+  color:#66BFBF;
+  font-size: 5.625rem;
+  font-family: 'Sacramento', cursive;
+  margin: 50px auto 0 auto;
+  text-align: center;
+}
+
+h2{
+  color:#66BFBF;
+  font-family: 'Montserrat', sans-serif;
+  font-size:2.0rem;
+  font-weight: normal;
+  padding-bottom: 10px;
+}
+
+h3{
+  color:#11999E;
+  font-family: 'Montserrat', sans-serif;
+}
 
 h3, input, label{
   margin-left: 10px;

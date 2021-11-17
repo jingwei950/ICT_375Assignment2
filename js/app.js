@@ -90,7 +90,11 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         tableData += "</tr>";
                     }
                     tableData += "</table>";
-                    tableOutput.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);                 
+                    tableOutput.html("<h3 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);                 
+                    // $("#body").animate({scrollTop:1000000}, 800);
+                    // window.scrollTo(0, document.getElementById("tableOutput").scrollHeight);
+                    // window.scrollTo(0, document.getElementById("graphOutput").scrollHeight);
+                    // body.scrollTop = body.scrollHeight;
                 }
                 else{
                     tableOutput.attr("hidden", "hidden");                       
@@ -180,7 +184,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                             }); 
                     }
                     else{ //If no chart exist 
-                        graphOutput.html('<h3>Graph</h3>' + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
+                        graphOutput.html('<h3 class="underline">Graph</h3>' + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
                         var myChart = document.getElementById("myChart");
                         myChart.removeAttribute("hidden");
                         var ctx =  myChart.getContext("2d");
@@ -223,6 +227,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                 else{
                     graphOutput.attr("hidden", "hidden");
                 } 
+                //Scroll to bottom of page when result is out
+                window.scrollTo(0, 1000);
                 //Reset the form after data displayed
                 form.reset();  
             }
@@ -292,7 +298,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                     }
                     tableData += "</table>";
                     // console.log(tableData);
-                    tableOutput.html("<h3> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);
+                    tableOutput.html("<h3 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);
                 }
                 else{
                     tableOutput.attr("hidden", "hidden");                       
@@ -380,7 +386,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                             }); 
                     }
                     else{ //If no chart exist 
-                        graphOutput.html('<h3>Graph</h3>' + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
+                        graphOutput.html('<h3 class="underline">Graph</h3>' + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
                         var myChart = document.getElementById("myChart");
                         myChart.removeAttribute("hidden");
                         var ctx =  myChart.getContext("2d");
@@ -423,7 +429,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                 else{
                     graphOutput.attr("hidden", "hidden");
                 }
-
+                //Scroll to bottom of page when result is out
+                window.scrollTo(0, 1000);
                 //Reset the form
                 form.reset();  
             }
@@ -526,3 +533,8 @@ start.change(function(){
         end.val(start.val());
     }
 });
+
+if($("#tableOutput").attr("hidden") == null){
+    console.log("hidden removed");
+    // $("#tableOutput").animate({scrollTop:1000000}, 800);
+}
