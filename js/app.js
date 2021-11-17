@@ -6,26 +6,20 @@ var start = $("#start");
 var end = $("#end");
 var table = $("#table");
 var graph = $("#graph");
-var allMonths = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-    "Jul", "Aug","Sep", "Oct", "Nov", "Dec"
+var monthNumber = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 
-//
+
 form.addEventListener("submit", function(e){ //When form is submitted
     e.preventDefault();
     
     var year = $("#year").val();
     var tableOutput = $("#tableOutput");
     var graphOutput = $("#graphOutput");
-
-    var monthNumber = [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-    ];
-    
-
     var requestedMonths = [];
+
     //Process range of month from what user select
     for (var j = monthNumber.indexOf(start.val()); j <= monthNumber.indexOf(end.val()); j++) {
         requestedMonths.push(monthNumber[j]); //Store requested range of months into array
@@ -36,9 +30,9 @@ form.addEventListener("submit", function(e){ //When form is submitted
 
     //If year is in between 2007 to 2009 execute this (XML)
     if(year == 2007 || year == 2008 || year == 2009){
-        console.log("Year selected is: " + year);
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
+                //XML data
                 var xmlData = JSON.parse(xhr.responseText);  
 
                 //If table checkbox is checked, display data on table
@@ -47,7 +41,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                     //Display table
                     tableOutput.removeAttr("hidden");                    
                   
-                   var tableData = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
+                    var tableData = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
                     '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
 
                     //If wind speed checkbox is checked, generate ws data
@@ -90,11 +84,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         tableData += "</tr>";
                     }
                     tableData += "</table>";
-                    tableOutput.html("<h3 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);                 
-                    // $("#body").animate({scrollTop:1000000}, 800);
-                    // window.scrollTo(0, document.getElementById("tableOutput").scrollHeight);
-                    // window.scrollTo(0, document.getElementById("graphOutput").scrollHeight);
-                    // body.scrollTop = body.scrollHeight;
+                    tableOutput.html("<h2 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h2>" + tableData);                 
                 }
                 else{
                     tableOutput.attr("hidden", "hidden");                       
@@ -102,9 +92,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                 
                 //If graph checkbox is checked, display chart data
                 if(graph.prop("checked") === true){ 
-                    console.log("Graph checked");
-                    graphOutput.removeAttr("hidden");                   
-                    // graphOutput.html("<h3>Graph</h3>");
+                    graphOutput.removeAttr("hidden");    
+
                     var wsData = [
                         xmlData[0].WsAvg.toFixed(2), xmlData[1].WsAvg.toFixed(2), xmlData[2].WsAvg.toFixed(2), xmlData[3].WsAvg.toFixed(2), 
                         xmlData[4].WsAvg.toFixed(2), xmlData[5].WsAvg.toFixed(2), xmlData[6].WsAvg.toFixed(2), xmlData[7].WsAvg.toFixed(2), 
@@ -145,7 +134,6 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         }
                     }
                     
-                
                     if(myChart){//If there is chart
                         ctx.destroy();  //Destroy previous chart
                         
@@ -184,7 +172,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                             }); 
                     }
                     else{ //If no chart exist 
-                        graphOutput.html('<h3 class="underline">Graph</h3>' + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
+                        graphOutput.html('<h2 class="underline">Graph for '+ start.val() + ' to ' + end.val() + ' of year ' + year + '</h2>' + 
+                        '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
                         var myChart = document.getElementById("myChart");
                         myChart.removeAttribute("hidden");
                         var ctx =  myChart.getContext("2d");
@@ -227,8 +216,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                 else{
                     graphOutput.attr("hidden", "hidden");
                 } 
-                //Scroll to bottom of page when result is out
-                window.scrollTo(0, 1000);
+                //Auto scroll to bottom of page when result is out
+                $('html, body').animate({ scrollTop: "1000px" });
                 //Reset the form after data displayed
                 form.reset();  
             }
@@ -241,15 +230,14 @@ form.addEventListener("submit", function(e){ //When form is submitted
     //If year is in between 2010 to 2016 execute this (JSON)
     else if(year == 2010 || year == 2011 || year == 2012 || year == 2013 
     || year == 2014 || year == 2015 || year == 2016){
-        console.log("Year selected is: " + year);
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
-                //Check table checkbox
+                //JSON data
                 var jsonData = JSON.parse(xhr.responseText);
-                console.log(jsonData);
+
                 //Check table checkbox
                 if(table.prop("checked") === true){
-                    console.log("Table checked: " + true);
+
                     //Display table
                     tableOutput.removeAttr("hidden");                    
                     // console.log(jsonData[0].Month);
@@ -297,16 +285,13 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         tableData += "</tr>";
                     }
                     tableData += "</table>";
-                    // console.log(tableData);
-                    tableOutput.html("<h3 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h3>" + tableData);
+                    tableOutput.html("<h2 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h2>" + tableData);
                 }
                 else{
                     tableOutput.attr("hidden", "hidden");                       
                 }  
                 if(graph.prop("checked") === true){ 
-                    console.log("Graph checked");
                     graphOutput.removeAttr("hidden");                   
-                    // graphOutput.html("<h3>Graph</h3>");
                     var wsData = [
                         jsonData[0].WsAvg.toFixed(2), jsonData[1].WsAvg.toFixed(2), jsonData[2].WsAvg.toFixed(2), jsonData[3].WsAvg.toFixed(2), 
                         jsonData[4].WsAvg.toFixed(2), jsonData[5].WsAvg.toFixed(2), jsonData[6].WsAvg.toFixed(2), jsonData[7].WsAvg.toFixed(2), 
@@ -345,8 +330,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         else{
                             return {}
                         }
-                    }
-                    
+                    }                  
                 
                     if(myChart){//If there is chart
                         ctx.destroy();  //Destroy previous chart
@@ -386,7 +370,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                             }); 
                     }
                     else{ //If no chart exist 
-                        graphOutput.html('<h3 class="underline">Graph</h3>' + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
+                        graphOutput.html('<h2 class="underline">Graph</h2>' + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
                         var myChart = document.getElementById("myChart");
                         myChart.removeAttribute("hidden");
                         var ctx =  myChart.getContext("2d");
@@ -429,8 +413,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                 else{
                     graphOutput.attr("hidden", "hidden");
                 }
-                //Scroll to bottom of page when result is out
-                window.scrollTo(0, 1000);
+                //Auto scroll to bottom of page when result is out
+                $('html, body').animate({ scrollTop: "1000px" });
                 //Reset the form
                 form.reset();  
             }
@@ -438,57 +422,9 @@ form.addEventListener("submit", function(e){ //When form is submitted
         xhr.open("POST", "/reqJson", true);  
         xhr.send(formData);
     }
-    //Check wind speed checkbox
-    // if(wind.prop("checked") === true && radiation.prop("checked") === true){
-    //     sendReq();
-    // }
-    // else if(wind.prop("checked") === true){
-    //     sendReq();
-    // }
-    // else if(radiation.prop("checked") === true){
-    //     sendReq();
-    // }
-    // else{
-    //     console.log("Please check at least 1");
-    // }
-
-    //Check solar radiation checkbox
-    // if(radiation.prop("checked") === true){
-    //     console.log("Solar radiation checked: " + true);
-    // }
-    // else{
-    //     console.log("Solar radiation checked: " + false);
-    // }
-
-    //Get value of Year
-    console.log(year);
-
-    //Get start month
-    console.log(start.val());
-
-    //Get end month
-    console.log(end.val());
-
-    //Check table checkbox
-    if(table.prop("checked") === true){
-        console.log("Table checked: " + true);
-    }
-    else{
-        console.log("Table checked: " + false);
-    }
-
-    //Check graph checkbox
-    if(graph.prop("checked") === true){
-        console.log("Graph checked: " + true);
-    }
-    else{
-        console.log("Graph checked: " + false);
-    }
 });
 
-//Chart.js data
-
-//Check box validation
+//WindSpeed, SolarRadiation, Table and Graph check box validation
 wind.on('click', function(){
     if(wind.prop("checked") === false && radiation.prop("checked") === false){
         $("#measurementsErrMsg").html("Please select at least 1 option").css("color", "red");
@@ -523,18 +459,13 @@ graph.on('click', function(){
 
 //Start month and end month validation
 end.change(function(){
-    if(allMonths.indexOf(start.val()) > allMonths.indexOf(end.val())){
+    if(monthNumber.indexOf(start.val()) > monthNumber.indexOf(end.val())){
         start.val(end.val());
     }
 });
 
 start.change(function(){
-    if(allMonths.indexOf(end.val()) < allMonths.indexOf(start.val())){
+    if(monthNumber.indexOf(end.val()) < monthNumber.indexOf(start.val())){
         end.val(start.val());
     }
 });
-
-if($("#tableOutput").attr("hidden") == null){
-    console.log("hidden removed");
-    // $("#tableOutput").animate({scrollTop:1000000}, 800);
-}
