@@ -1,5 +1,4 @@
-'use strict'
-
+'use strict';
 const form = document.querySelector("#myForm");
 var wind = $("#wind");
 var radiation = $("#radiation");
@@ -8,6 +7,7 @@ var start = $("#start");
 var end = $("#end");
 var table = $("#table");
 var graph = $("#graph");
+var toTopBtn = $("#toTopBtn");
 var monthNumber = [
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -392,6 +392,11 @@ form.addEventListener("submit", function(e){ //When form is submitted
     }
 });
 
+// When to toTopBtn button is clicked, scroll to the top
+function toTop() {
+    $('html, body').animate({ scrollTop: "0px" });
+}
+
 //Year input validation
 year.on('blur', function(){
     if(year.val() < 2007 || year.val() > 2016){
@@ -434,14 +439,14 @@ graph.on('click', function(){
     }
 });
 
-//End month validation
+//End month dropdown validation
 end.change(function(){
     if(monthNumber.indexOf(start.val()) > monthNumber.indexOf(end.val())){
         start.val(end.val());
     }
 });
 
-//Start month validation
+//Start month dropdown validation
 start.change(function(){
     if(monthNumber.indexOf(end.val()) < monthNumber.indexOf(start.val())){
         end.val(start.val());

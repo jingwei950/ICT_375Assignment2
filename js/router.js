@@ -1,5 +1,4 @@
 "use strict";
-
 //Route
 function route(pathName, request, response, handle){
     console.log("Routing a request for: " + pathName);

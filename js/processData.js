@@ -1,3 +1,4 @@
+'use strict';
 function processXML(xmlRecords, startMonth, endMonth, selectedYear) {
 
     var monthNumber = [
@@ -11,92 +12,93 @@ function processXML(xmlRecords, startMonth, endMonth, selectedYear) {
     for (var j = monthNumber.indexOf(startMonth); j <= monthNumber.indexOf(endMonth); j++) {
         requestedMonths.push(monthNumber[j]); //Store requested range of months into array
     }
-    console.log("Requested year: " + selectedYear);
-    console.log("Requested range of months: " + requestedMonths);
+    
+    console.log("Requested data retrieved");
+
     //Process object retrieved from URL, convert dates with respective months, WS and SR to number
     let result2 = xmlRecords.map(function (value) {
         if (value.date[0].includes("/01/")) {
             value.date[0] = 'Jan',
-                value.ws[0] = Number(value.ws[0]), //Convert string to number
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]), //Convert string to number
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/02/")) {
             value.date[0] = 'Feb',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/03/")) {
             value.date[0] = 'Mar',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/04/")) {
             value.date[0] = 'Apr',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/05/")) {
             value.date[0] = 'May',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/06/")) {
             value.date[0] = 'Jun',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/07/")) {
             value.date[0] = 'Jul',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/08/")) {
             value.date[0] = 'Aug',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/09/")) {
             value.date[0] = 'Sep',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/10/")) {
             value.date[0] = 'Oct',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/11/")) {
             value.date[0] = 'Nov',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
         if (value.date[0].includes("/12/")) {
             value.date[0] = 'Dec',
-                value.ws[0] = Number(value.ws[0]),
-                value.sr[0] = Number(value.sr[0]),
-                delete value.time
+            value.ws[0] = Number(value.ws[0]),
+            value.sr[0] = Number(value.sr[0]),
+            delete value.time
             return value
         }
     });
@@ -164,92 +166,93 @@ function processJSON (JSONRecords, startMonth, endMonth, selectedYear) {
     for (var j = monthNumber.indexOf(startMonth); j <= monthNumber.indexOf(endMonth); j++) {
         requestedMonths.push(monthNumber[j]); //Store requested range of months into array
     }
-    console.log("Requested year: " + selectedYear);
-    console.log("Requested range of months: " + requestedMonths);
+
+    console.log("Requested data retrieved");
+
     //Process object retrieved from URL, convert dates with respective months, WS and SR to number
     let result2 = JSONRecords.map(function (value) {
         if (value.date.includes("/01/")) {
             value.date = 'Jan',
-                value.ws = Number(value.ws), //Convert string to number
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws), //Convert string to number
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/02/")) {
             value.date = 'Feb',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/03/")) {
             value.date = 'Mar',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/04/")) {
             value.date = 'Apr',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/05/")) {
             value.date = 'May',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/06/")) {
             value.date = 'Jun',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/07/")) {
             value.date = 'Jul',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/08/")) {
             value.date = 'Aug',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/09/")) {
             value.date = 'Sep',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/10/")) {
             value.date = 'Oct',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/11/")) {
             value.date = 'Nov',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
         if (value.date.includes("/12/")) {
             value.date = 'Dec',
-                value.ws = Number(value.ws),
-                value.sr = Number(value.sr),
-                delete value.time
+            value.ws = Number(value.ws),
+            value.sr = Number(value.sr),
+            delete value.time
             return value
         }
     });

@@ -4,6 +4,7 @@ body{
   text-align: center;
   font-family: 'Merriweather', serif;
 }
+
 /* Div styles start */
 #body{
   margin:auto;
@@ -49,7 +50,6 @@ h2{
 h3{
   color:#11999E;
   font-family: 'Montserrat', sans-serif;
-  /* font-size: 1.17vw; */
 }
 
 h3, input, label{
@@ -65,7 +65,7 @@ h3, input, label{
   padding-bottom: 100px;
 }
 
-/* Table style start */
+/* Table style */
 #data {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
@@ -87,9 +87,10 @@ h3, input, label{
   background-color: #11999E;
   color: white;
 }
-/* Table style end */
+/* Table style */
 
-@media only screen and (max-width: 415px) {
+/* Mobile style */
+@media only screen and (max-width: 1024px) {
 
   body{ 
      font-size: 0.5em; 
@@ -122,4 +123,31 @@ h3, input, label{
   #tableOutput{
     overflow-x:auto;
   }
+
+  #toTopBtn{
+    display: none;
+  }
 }
+/* Mobile style */
+
+/* To top button style */
+#toTopBtn {
+  position: fixed; 
+  bottom: 20px; 
+  right: 100px; 
+  z-index: 99; 
+  border: none;
+  outline: none;
+  background-color: #11999E;
+  color: white;
+  cursor: pointer; 
+  padding: 15px;
+  border-radius: 10px;
+  width: 80px;
+  font-size: 30px;
+}
+
+#toTopBtn:hover {
+  background-color: #555;
+}
+/* To top button style */

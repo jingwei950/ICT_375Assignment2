@@ -74,15 +74,13 @@ function reqXml(response, request, pathName) {
             var selectedYear = field.year;
             var selectedStartM = field.start;
             var selectedEndM = field.end;
-            var wind = field.wind;
-            var radiation = field.radiation;
 
             //XML URL link
-            var file_url = 'http://it.murdoch.edu.au/~S900432D/ict375/data/' + selectedYear + '.xml';
-            var testXML = 'http://ceto.murdoch.edu.au/~34053405/ICT375/xml/2007test.xml'; //TO BE DELETED AFTER TEST
+            var fileURL = 'http://it.murdoch.edu.au/~S900432D/ict375/data/' + selectedYear + '.xml';
 
             //Retrieve XML from link provided
-            http.get(file_url, function (urlRes) {
+            http.get(fileURL, function (urlRes) {
+                console.log("Requesting data...");
                 var data = '';
                 var parser = new xml2js.Parser();
 
@@ -126,15 +124,13 @@ function reqJson(response, request, pathName) {
             var selectedYear = field.year;
             var selectedStartM = field.start;
             var selectedEndM = field.end;
-            var wind = field.wind;
-            var radiation = field.radiation;
 
             //XML URL link
-            var file_url = 'http://it.murdoch.edu.au/~S900432D/ict375/data/' + selectedYear + '.json';
-            var testXML = 'http://ceto.murdoch.edu.au/~34053405/ICT375/xml/2007test.xml'; //TO BE DELETED AFTER TEST
-
+            var fileURL = 'http://it.murdoch.edu.au/~S900432D/ict375/data/' + selectedYear + '.json';
+            
             //Retrieve XML from link provided
-            http.get(file_url, function (urlRes) {
+            http.get(fileURL, function (urlRes) {
+                console.log("Requesting data...");
                 var data = '';
 
                 urlRes.on('data', function (chunk) {

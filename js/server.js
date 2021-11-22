@@ -15,8 +15,7 @@ function startServer(route, handle){
     //Create Server, get pathname and pass it to function route()
     const server = http.createServer(function(request, response){   
         console.log("Requested path: " + request.url);
-        var pathName = url.parse(request.url).pathname;
-        console.log("Path: " + pathName);     
+        var pathName = url.parse(request.url).pathname;     
 
         //Route function
         route(pathName, request, response, handle);
