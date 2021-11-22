@@ -21,15 +21,16 @@
                 <form action="" id="myForm">
                     <div id="measurements">
                         <h3>Data to Display</h3>
-                        <input type="checkbox" name="wind" id="wind" checked><label for="wind" >Wind Speed</label>
-                        <input type="checkbox" name="radiation" id="radiation" checked><label for="radiation">Solar Radiation</label>
+                        <input type="checkbox" class="checkBoxes" name="wind" id="wind" checked><label for="wind" >Wind Speed</label>
+                        <input type="checkbox" name="radiation" id="radiation" checked><label for="radiation">Solar Radiation</label><br/>
                         <span id="measurementsErrMsg"></span>
                     </div>
                     <div id="date">
                         <h3>Date Range</h3>
 
                         <label for="year" id="lblYear">Year:</label>
-                        <input type="number" id="year" name="year" value="" min="2007" max="2016"/><br/><br/>
+                        <input type="number" id="year" name="year" value="2007" min="2007" max="2016"/><br/>
+                        <span id="yearErrMsg"></span><br/><br/>
 
                         <label for="start" id="lblStart">Start Month:</label>
                         <select name="start" id="start">
@@ -67,7 +68,7 @@
                     <div id="format">
                         <h3>Output format</h3>
                         <input type="checkbox" name="table" id="table" checked><label for="year">Table</label>
-                        <input type="checkbox" name="graph" id="graph" checked><label for="year">Graph</label>
+                        <input type="checkbox" name="graph" id="graph" checked><label for="year">Graph</label><br/>
                         <span id="formatErrMsg"></span>
                     </div>
                     <br />

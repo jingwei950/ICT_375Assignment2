@@ -151,7 +151,7 @@ function processXML(xmlRecords, startMonth, endMonth, selectedYear) {
     return finalResult; //Return the result of table
 }
 
-function processJSON (JSONRecords, startMonth, endMonth , selectedYear) {
+function processJSON (JSONRecords, startMonth, endMonth, selectedYear) {
 
     var monthNumber = [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",

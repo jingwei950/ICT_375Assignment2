@@ -1,7 +1,9 @@
 'use strict'
+
 const form = document.querySelector("#myForm");
 var wind = $("#wind");
 var radiation = $("#radiation");
+var year = $("#year");
 var start = $("#start");
 var end = $("#end");
 var table = $("#table");
@@ -14,8 +16,7 @@ var monthNumber = [
 
 form.addEventListener("submit", function(e){ //When form is submitted
     e.preventDefault();
-    
-    var year = $("#year").val();
+
     var tableOutput = $("#tableOutput");
     var graphOutput = $("#graphOutput");
     var requestedMonths = [];
@@ -29,10 +30,10 @@ form.addEventListener("submit", function(e){ //When form is submitted
     var xhr = new XMLHttpRequest();
 
     //If year is in between 2007 to 2009 execute this (XML)
-    if(year == 2007 || year == 2008 || year == 2009){
+    if(year.val() == 2007 || year.val() == 2008 || year.val() == 2009){
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
-                //XML data
+                //Retrieved XML data
                 var xmlData = JSON.parse(xhr.responseText);  
 
                 //If table checkbox is checked, display data on table
@@ -84,7 +85,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         tableData += "</tr>";
                     }
                     tableData += "</table>";
-                    tableOutput.html("<h2 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h2>" + tableData);                 
+                    tableOutput.html("<h2 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year.val() + "</h2>" + tableData);                 
                 }
                 else{
                     tableOutput.attr("hidden", "hidden");                       
@@ -94,130 +95,112 @@ form.addEventListener("submit", function(e){ //When form is submitted
                 if(graph.prop("checked") === true){ 
                     graphOutput.removeAttr("hidden");    
 
+                    //To store requested WS and SR
+                    var requestedWs = [];
+                    var requestedSr = [];
+
+                    //All WindSpeed data from XML
                     var wsData = [
                         xmlData[0].WsAvg.toFixed(2), xmlData[1].WsAvg.toFixed(2), xmlData[2].WsAvg.toFixed(2), xmlData[3].WsAvg.toFixed(2), 
                         xmlData[4].WsAvg.toFixed(2), xmlData[5].WsAvg.toFixed(2), xmlData[6].WsAvg.toFixed(2), xmlData[7].WsAvg.toFixed(2), 
                         xmlData[8].WsAvg.toFixed(2), xmlData[9].WsAvg.toFixed(2), xmlData[10].WsAvg.toFixed(2), xmlData[11].WsAvg.toFixed(2)
                     ];
+
+                    //All Solar Radiation data from XML
                     var srData = [
                         xmlData[0].SrTotal.toFixed(2), xmlData[1].SrTotal.toFixed(2), xmlData[2].SrTotal.toFixed(2), xmlData[3].SrTotal.toFixed(2), 
                         xmlData[4].SrTotal.toFixed(2), xmlData[5].SrTotal.toFixed(2), xmlData[6].SrTotal.toFixed(2), xmlData[7].SrTotal.toFixed(2), 
                         xmlData[8].SrTotal.toFixed(2), xmlData[9].SrTotal.toFixed(2), xmlData[10].SrTotal.toFixed(2), xmlData[11].SrTotal.toFixed(2)
                     ]
 
-                    function getwsSets(){
+                    //To process requested WS data requested
+                    function getwsSets(){   
+                        for (var k = monthNumber.indexOf(start.val()); k <= monthNumber.indexOf(end.val()); k++) {
+                            requestedWs.push(wsData[k]); //Store requested Windspeed of range of months into array
+                        }
+                        //Wind Speed Data set to be placed into data in chart object
                         var wsDSet = {
-                            label: "Wind Speed", yAxisID: 'Ws', data: wsData, backgroundColor:['rgba(54,162,235,0.6)'],
+                            label: "Wind Speed", yAxisID: 'Ws', data: requestedWs, backgroundColor:['rgba(54,162,235,0.6)'],
                             borderWidth: 5, borderColor: 'rgba(54,162,235,0.6)', tension: 0.4, fill: true
                         };
-    
+                        
+                        //Check if windspeed check box is checked
                         if(wind.prop("checked") === true){
-                            return wsDSet;
+                            return wsDSet;  //Return data if checked
                         }
                         else{
-                            return {}
+                            return {}       //Return nothing if not checked
                         }
                         
                     }
 
+                    //To process requested SR data requested
                     function getsrSets(){
+                        for (var l = monthNumber.indexOf(start.val()); l <= monthNumber.indexOf(end.val()); l++) {
+                            requestedSr.push(srData[l]); //Store requested Solar Radiation of range of months into array
+                        }
+
+                        //Solar Radiation data set to be placed into data in chart object
                         var srDSet = {
-                            label: "Solar Radiation", yAxisID: 'Sr', data: srData, backgroundColor:['rgba(255,159,64,0.6)'],
+                            label: "Solar Radiation", yAxisID: 'Sr', data: requestedSr, backgroundColor:['rgba(255,159,64,0.6)'],
                             borderWidth: 5, borderColor:'rgba(255,159,64,0.6)', tension: 0.4, fill: true
                         }
 
+                        //Check if radiation check box is checked
                         if(radiation.prop("checked") === true){
-                            return srDSet;
+                            return srDSet;  //Return data if checked
                         }
                         else{
-                            return {}
+                            return {}       //Return nothing if not checked
                         }
                     }
                     
-                    if(myChart){//If there is chart
+                    if(myChart){        //If chart already exist
                         ctx.destroy();  //Destroy previous chart
-                        
+
                         new Chart(ctx,  //Create new chart
-                            {
-                                type: "line",
-                                data: {
-                                    labels: requestedMonths,
-                                    datasets: [getwsSets(), getsrSets()]
-                                },
-                                options: {
-                                    bezierCurve: true,
-                                    legend: {display: true},
-                                    title: {
-                                        display: true,
-                                        text: 'Test'
-                                    },
-                                    scales:{
-                                        Ws:{
-                                            type: 'linear',
-                                            position: 'left'
-                                        },
-                                        Sr:{
-                                            type: 'linear',
-                                            position: 'right',
-                                            grid: {
-                                                display: false
-                                            },
-                                            ticks: {
-                                                max: 50,
-                                                min: 0
-                                            }
-                                        }
-                                    }
+                        {
+                            type: "line",
+                            data: {labels: requestedMonths, datasets: [getwsSets(), getsrSets()]}, //Function for requested data
+                            options: {
+                                bezierCurve: true, 
+                                legend: {display: true},
+                                title: {display: true},
+                                scales:{
+                                    Ws:{type: 'linear', position: 'left'},
+                                    Sr:{type: 'linear', position: 'right', grid: {display: false}, ticks: {max: 50, min: 0}}
                                 }
-                            }); 
+                            }
+                        });   
                     }
                     else{ //If no chart exist 
-                        graphOutput.html('<h2 class="underline">Graph for '+ start.val() + ' to ' + end.val() + ' of year ' + year + '</h2>' + 
+                        graphOutput.html('<h2 class="underline">Graph for '+ start.val() + ' to ' + end.val() + ' of year ' + year.val() + '</h2>' + 
                         '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
                         var myChart = document.getElementById("myChart");
                         myChart.removeAttribute("hidden");
                         var ctx =  myChart.getContext("2d");
 
-                        new Chart(ctx,
+                        new Chart(ctx,  //Create new chart
                         {
                             type: "line",
-                            data: {
-                                labels: requestedMonths,
-                                datasets: [getwsSets(), getsrSets()]
-                            },
+                            data: {labels: requestedMonths, datasets: [getwsSets(), getsrSets()]}, //Function for requested data
                             options: {
-                                bezierCurve: true,
+                                bezierCurve: true, 
                                 legend: {display: true},
-                                title: {
-                                    display: true,
-                                    text: 'Test'
-                                },
+                                title: {display: true},
                                 scales:{
-                                    Ws:{
-                                        type: 'linear',
-                                        position: 'left'
-                                    },
-                                    Sr:{
-                                        type: 'linear',
-                                        position: 'right',
-                                        grid: {
-                                            display: false
-                                        },
-                                        ticks: {
-                                            max: 50,
-                                            min: 0
-                                        }
-                                    }
+                                    Ws:{type: 'linear', position: 'left'},
+                                    Sr:{type: 'linear', position: 'right', grid: {display: false}, ticks: {max: 50, min: 0}}
                                 }
                             }
-                        });  
+                        });    
                     }   
                 }
                 else{
                     graphOutput.attr("hidden", "hidden");
                 } 
                 //Auto scroll to bottom of page when result is out
-                $('html, body').animate({ scrollTop: "1000px" });
+                $('html, body').animate({ scrollTop: "900px" });
                 //Reset the form after data displayed
                 form.reset();  
             }
@@ -228,11 +211,11 @@ form.addEventListener("submit", function(e){ //When form is submitted
         
     }
     //If year is in between 2010 to 2016 execute this (JSON)
-    else if(year == 2010 || year == 2011 || year == 2012 || year == 2013 
-    || year == 2014 || year == 2015 || year == 2016){
+    else if(year.val() == 2010 || year.val() == 2011 || year.val() == 2012 || year.val() == 2013 
+    || year.val() == 2014 || year.val() == 2015 || year.val() == 2016){
         xhr.onreadystatechange = function(){
             if(xhr.readyState == 4 && xhr.status == 200){
-                //JSON data
+                //Retrieved JSON data
                 var jsonData = JSON.parse(xhr.responseText);
 
                 //Check table checkbox
@@ -240,7 +223,6 @@ form.addEventListener("submit", function(e){ //When form is submitted
 
                     //Display table
                     tableOutput.removeAttr("hidden");                    
-                    // console.log(jsonData[0].Month);
                   
                    var tableData = '<table id="data"><tr><th></th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th><th>Jun</th>' +
                     '<th>Jul</th><th>Aug</th><th>Sep</th><th>Oct</th><th>Nov</th><th>Dec</th></tr>';
@@ -264,8 +246,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         });
                         tableData += '</tr>';                      
                     }   
-
-                    if(radiation.prop("checked") === true){ //If solar radiation checkbox is checked, generate sr data
+                    //If solar radiation checkbox is checked, generate sr data
+                    if(radiation.prop("checked") === true){ 
                         //Generate table data for Solar Radiation
                         tableData += '<tr><td>Solar Radiation (kWh/m&#178;)</td>';
                         jsonData.filter(function(item) {
@@ -285,92 +267,96 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         tableData += "</tr>";
                     }
                     tableData += "</table>";
-                    tableOutput.html("<h2 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year + "</h2>" + tableData);
+                    tableOutput.html("<h2 class='underline'> Data for "+ start.val() + " to " + end.val() + " of year " + year.val() + "</h2>" + tableData);
                 }
                 else{
                     tableOutput.attr("hidden", "hidden");                       
                 }  
                 if(graph.prop("checked") === true){ 
-                    graphOutput.removeAttr("hidden");                   
+                    graphOutput.removeAttr("hidden");  
+
+                    //To store requested WS and SR
+                    var requestedWs = [];
+                    var requestedSr = [];
+
+                    //All WindSpeed data from JSON
                     var wsData = [
                         jsonData[0].WsAvg.toFixed(2), jsonData[1].WsAvg.toFixed(2), jsonData[2].WsAvg.toFixed(2), jsonData[3].WsAvg.toFixed(2), 
                         jsonData[4].WsAvg.toFixed(2), jsonData[5].WsAvg.toFixed(2), jsonData[6].WsAvg.toFixed(2), jsonData[7].WsAvg.toFixed(2), 
                         jsonData[8].WsAvg.toFixed(2), jsonData[9].WsAvg.toFixed(2), jsonData[10].WsAvg.toFixed(2), jsonData[11].WsAvg.toFixed(2)
                     ];
+
+                    //All Solar Radiation data from JSON
                     var srData = [
                         jsonData[0].SrTotal.toFixed(2), jsonData[1].SrTotal.toFixed(2), jsonData[2].SrTotal.toFixed(2), jsonData[3].SrTotal.toFixed(2), 
                         jsonData[4].SrTotal.toFixed(2), jsonData[5].SrTotal.toFixed(2), jsonData[6].SrTotal.toFixed(2), jsonData[7].SrTotal.toFixed(2), 
                         jsonData[8].SrTotal.toFixed(2), jsonData[9].SrTotal.toFixed(2), jsonData[10].SrTotal.toFixed(2), jsonData[11].SrTotal.toFixed(2)
                     ]
 
+                    //Process requested WindSpeed
                     function getwsSets(){
+                        for (var k = monthNumber.indexOf(start.val()); k <= monthNumber.indexOf(end.val()); k++) {
+                            requestedWs.push(wsData[k]); //Store requested Windspeed of range of months into array
+                        }
+
+                        //Wind Speed Data set to be placed into data in chart object
                         var wsDSet = {
-                            label: "Wind Speed", yAxisID: 'Ws', data: wsData, backgroundColor:['rgba(54,162,235,0.6)'],
+                            label: "Wind Speed", yAxisID: 'Ws', data: requestedWs, backgroundColor:['rgba(54,162,235,0.6)'],
                             borderWidth: 5, borderColor: 'rgba(54,162,235,0.6)', tension: 0.4, fill: true
                         };
-    
+
+                        //Check if radiation check box is checked
                         if(wind.prop("checked") === true){
-                            return wsDSet;
+                            return wsDSet;  //Return data if checked
                         }
                         else{
-                            return {}
+                            return {}       //Return nothing if not checked
                         }
                         
                     }
 
+                    //Process requested Solar Radiation
                     function getsrSets(){
+                        for (var l = monthNumber.indexOf(start.val()); l <= monthNumber.indexOf(end.val()); l++) {
+                            requestedSr.push(srData[l]); //Store requested Solar Radiation of range of months into array
+                        }
+
+                        //Solar Radiation Data set to be placed into data in chart object
                         var srDSet = {
-                            label: "Solar Radiation", yAxisID: 'Sr', data: srData, backgroundColor:['rgba(255,159,64,0.6)'],
+                            label: "Solar Radiation", yAxisID: 'Sr', data: requestedSr, backgroundColor:['rgba(255,159,64,0.6)'],
                             borderWidth: 5, borderColor:'rgba(255,159,64,0.6)', tension: 0.4, fill: true
                         }
 
+                        //Check if radiation check box is checked
                         if(radiation.prop("checked") === true){
-                            return srDSet;
+                            return srDSet;  //Return data if checked
                         }
                         else{
-                            return {}
+                            return {}       //Return nothing if not checked
                         }
                     }                  
                 
-                    if(myChart){//If there is chart
+                    if(myChart){        //If chart already exist
                         ctx.destroy();  //Destroy previous chart
-                        
-                        new Chart(ctx,  //Create new chart
-                            {
-                                type: "line",
-                                data: {
-                                    labels: requestedMonths,
-                                    datasets: [getwsSets(), getsrSets()]
-                                },
-                                options: {
-                                    bezierCurve: true,
-                                    legend: {display: true},
-                                    title: {
-                                        display: true,
-                                        text: 'Test'
-                                    },
-                                    scales:{
-                                        Ws:{
-                                            type: 'linear',
-                                            position: 'left'
-                                        },
-                                        Sr:{
-                                            type: 'linear',
-                                            position: 'right',
-                                            grid: {
-                                                display: false
-                                            },
-                                            ticks: {
-                                                max: 50,
-                                                min: 0
-                                            }
-                                        }
-                                    }
+
+                        //Create new chart
+                        new Chart(ctx, 
+                        {
+                            type: "line", //Graph type
+                            data: {labels: requestedMonths, datasets: [getwsSets(), getsrSets()]}, //Function for requested data
+                            options: {
+                                bezierCurve: true, 
+                                legend: {display: true},
+                                title: {display: true },
+                                scales:{
+                                    Ws:{type: 'linear', position: 'left'},
+                                    Sr:{type: 'linear', position: 'right', grid: {display: false}, ticks: { max: 50,min: 0}}
                                 }
-                            }); 
+                            }
+                        }); 
                     }
                     else{ //If no chart exist 
-                        graphOutput.html('<h2 class="underline">Graph for '+ start.val() + ' to ' + end.val() + ' of year ' + year + '</h2>' 
+                        graphOutput.html('<h2 class="underline">Graph for '+ start.val() + ' to ' + end.val() + ' of year ' + year.val() + '</h2>' 
                         + '<canvas id="myChart" style="width:100%;" hidden="hidden"></canvas>');
                         var myChart = document.getElementById("myChart");
                         myChart.removeAttribute("hidden");
@@ -379,33 +365,14 @@ form.addEventListener("submit", function(e){ //When form is submitted
                         new Chart(ctx,
                         {
                             type: "line",
-                            data: {
-                                labels: requestedMonths,
-                                datasets: [getwsSets(), getsrSets()]
-                            },
+                            data: {labels: requestedMonths, datasets: [getwsSets(), getsrSets()]}, //Function for requested data
                             options: {
-                                bezierCurve: true,
+                                bezierCurve: true, 
                                 legend: {display: true},
-                                title: {
-                                    display: true,
-                                    text: 'Test'
-                                },
+                                title: {display: true},
                                 scales:{
-                                    Ws:{
-                                        type: 'linear',
-                                        position: 'left'
-                                    },
-                                    Sr:{
-                                        type: 'linear',
-                                        position: 'right',
-                                        grid: {
-                                            display: false
-                                        },
-                                        ticks: {
-                                            max: 50,
-                                            min: 0
-                                        }
-                                    }
+                                    Ws:{type: 'linear', position: 'left'},
+                                    Sr:{type: 'linear', position: 'right', grid: {display: false}, ticks: {max: 50, min: 0}}
                                 }
                             }
                         });  
@@ -415,8 +382,8 @@ form.addEventListener("submit", function(e){ //When form is submitted
                     graphOutput.attr("hidden", "hidden");
                 }
                 //Auto scroll to bottom of page when result is out
-                $('html, body').animate({ scrollTop: "1000px" });
-                //Reset the form
+                $('html, body').animate({ scrollTop: "900px" });
+                //Reset the form after data displayed
                 form.reset();  
             }
         }
@@ -425,7 +392,16 @@ form.addEventListener("submit", function(e){ //When form is submitted
     }
 });
 
-//WindSpeed, SolarRadiation, Table and Graph check box validation
+//Year input validation
+year.on('blur', function(){
+    if(year.val() < 2007 || year.val() > 2016){
+        $("#yearErrMsg").html("Please select year between 2007 and 2016").css("color", "red");
+    }else{
+        $("#yearErrMsg").html("");
+    }
+});
+
+//WindSpeed check box validation
 wind.on('click', function(){
     if(wind.prop("checked") === false && radiation.prop("checked") === false){
         $("#measurementsErrMsg").html("Please select at least 1 option").css("color", "red");
@@ -433,7 +409,7 @@ wind.on('click', function(){
         $("#measurementsErrMsg").html("");
     }
 });
-
+//Solar Radiation check box validation
 radiation.on('click', function(){
     if(wind.prop("checked") === false && radiation.prop("checked") === false){
         $("#measurementsErrMsg").html("Please select at least 1 option").css("color", "red");
@@ -441,7 +417,7 @@ radiation.on('click', function(){
         $("#measurementsErrMsg").html("");
     }
 });
-
+//Table check box validation
 table.on('click', function(){
     if(table.prop("checked") === false && graph.prop("checked") === false){
         $("#formatErrMsg").html("Please select at least 1 option").css("color", "red");
@@ -449,7 +425,7 @@ table.on('click', function(){
         $("#formatErrMsg").html("");
     }
 });
-
+//Graph check box validation
 graph.on('click', function(){
     if(table.prop("checked") === false && graph.prop("checked") === false){
         $("#formatErrMsg").html("Please select at least 1 option").css("color", "red");
@@ -458,13 +434,14 @@ graph.on('click', function(){
     }
 });
 
-//Start month and end month validation
+//End month validation
 end.change(function(){
     if(monthNumber.indexOf(start.val()) > monthNumber.indexOf(end.val())){
         start.val(end.val());
     }
 });
 
+//Start month validation
 start.change(function(){
     if(monthNumber.indexOf(end.val()) < monthNumber.indexOf(start.val())){
         end.val(start.val());
