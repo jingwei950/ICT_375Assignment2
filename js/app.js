@@ -393,9 +393,9 @@ form.addEventListener("submit", function(e){ //When form is submitted
 });
 
 // When to toTopBtn button is clicked, scroll to the top
-function toTop() {
+$("#toTopBtn").on('click', function(){
     $('html, body').animate({ scrollTop: "0px" });
-}
+});
 
 //Year input validation
 year.on('blur', function(){

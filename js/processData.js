@@ -1,6 +1,8 @@
 'use strict';
 function processXML(xmlRecords, startMonth, endMonth, selectedYear) {
 
+    console.log("Processing data...");
+
     var monthNumber = [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -12,8 +14,6 @@ function processXML(xmlRecords, startMonth, endMonth, selectedYear) {
     for (var j = monthNumber.indexOf(startMonth); j <= monthNumber.indexOf(endMonth); j++) {
         requestedMonths.push(monthNumber[j]); //Store requested range of months into array
     }
-    
-    console.log("Requested data retrieved");
 
     //Process object retrieved from URL, convert dates with respective months, WS and SR to number
     let result2 = xmlRecords.map(function (value) {
@@ -155,6 +155,8 @@ function processXML(xmlRecords, startMonth, endMonth, selectedYear) {
 
 function processJSON (JSONRecords, startMonth, endMonth, selectedYear) {
 
+    console.log("Processing data...");
+    
     var monthNumber = [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun",
         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -166,8 +168,6 @@ function processJSON (JSONRecords, startMonth, endMonth, selectedYear) {
     for (var j = monthNumber.indexOf(startMonth); j <= monthNumber.indexOf(endMonth); j++) {
         requestedMonths.push(monthNumber[j]); //Store requested range of months into array
     }
-
-    console.log("Requested data retrieved");
 
     //Process object retrieved from URL, convert dates with respective months, WS and SR to number
     let result2 = JSONRecords.map(function (value) {

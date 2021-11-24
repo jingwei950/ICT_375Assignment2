@@ -8,7 +8,7 @@ const processData = require('./processData');
 
 //Handle start request
 function reqStart(response, request, pathName) {
-
+    console.log("Request handler 'reqStart' was called");
     fs.readFile("./html/index.html", function (error, data) {
         if (error) {
             console.log("Error");
@@ -19,7 +19,6 @@ function reqStart(response, request, pathName) {
             response.end();
         }
         else if (data) {
-            console.log("Request handler 'start' was called");
             response.writeHead(200, {
                 "Content-Type": "text/html"
             });
@@ -31,12 +30,11 @@ function reqStart(response, request, pathName) {
 
 //Handle JavaScript request
 function reqJs(response, request, pathName) {
-    console.log("JavaScript called");
+    console.log("Request handler 'reqJs' was called");
     fs.readFile("." + pathName, function (error, data) {
         if (error) {
             console.log("JavaScript read error");
         } else if (data) {
-            console.log("JavaScript read successfully");
             response.writeHead(200, {
                 "Content-Type": "text/javascript"
             });
@@ -48,12 +46,11 @@ function reqJs(response, request, pathName) {
 
 //Handle CSS request
 function reqCss(response, request, pathName) {
-    console.log("Css called");
+    console.log("Request handler 'reqCss' was called");
     fs.readFile("." + pathName, function (error, data) {
         if (error) {
             console.log("CSS read error");
-        } else if (data) {
-            console.log("CSS read successfully");
+        } else if (data) {          
             response.writeHead(200, {
                 "Content-Type": "text/css"
             });
@@ -65,6 +62,7 @@ function reqCss(response, request, pathName) {
 
 //Handle XML request
 function reqXml(response, request, pathName) {
+    console.log("Request handler 'reqXml' was called");
     var form = new formid.IncomingForm();
     //Parse form
     form.parse(request, function (error, field, file) {
@@ -80,7 +78,7 @@ function reqXml(response, request, pathName) {
 
             //Retrieve XML from link provided
             http.get(fileURL, function (urlRes) {
-                console.log("Requesting data...");
+                console.log("Requesting " + selectedYear + ".xml...");
                 var data = '';
                 var parser = new xml2js.Parser();
 
@@ -101,7 +99,7 @@ function reqXml(response, request, pathName) {
                             //Send response back
                             response.writeHead(200, {"Content-Type": "text/json"});
                             response.write(processData.processXML(records, selectedStartM, selectedEndM, selectedYear));
-                            response.end();
+                            response.end(console.log("Requested data retrieved"));
                         }
                     });
                 });
@@ -115,6 +113,7 @@ function reqXml(response, request, pathName) {
 
 //Handle JSON request
 function reqJson(response, request, pathName) {
+    console.log("Request handler 'reqJson' was called");
     var form = new formid.IncomingForm();
     //Parse form
     form.parse(request, function (error, field, file) {
@@ -130,7 +129,7 @@ function reqJson(response, request, pathName) {
             
             //Retrieve XML from link provided
             http.get(fileURL, function (urlRes) {
-                console.log("Requesting data...");
+                console.log("Requesting " + selectedYear + ".json...");
                 var data = '';
 
                 urlRes.on('data', function (chunk) {
@@ -148,7 +147,7 @@ function reqJson(response, request, pathName) {
                     //Send response back
                     response.writeHead(200, {"Content-Type": "text/json"});
                     response.write(processData.processJSON(records, selectedStartM, selectedEndM, selectedYear));
-                    response.end();
+                    response.end(console.log("Requested data retrieved"));
                 });
             })
             .on('error', function (err) {
@@ -163,7 +162,7 @@ function reqError(response, request, pathName) {
     response.writeHead(404, {
         "Content-Type": "text/html"
     });
-    response.write("Error not found\n");
+    response.write("404 error not found\n");
     response.end();
     console.log("Error");
 }
