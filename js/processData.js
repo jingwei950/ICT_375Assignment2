@@ -134,7 +134,6 @@ function processXML(xmlRecords, startMonth, endMonth, selectedYear) {
         res[Month].WsAvg = (res[Month].WsSum / res[Month].Count) * 3.6; //Convert m/s to km/h
         res[Month].SrSum += Sr;
         res[Month].SrTotal = res[Month].SrSum / 1000 //COnvert W/m^2 to kWh/m^2
-        // res[Month].SrAvg = (res[Month].SrSum / res[Month].Count); //COnvert W/m^2 to kWh/m^2
         return res;
     }, {});
 
@@ -148,8 +147,8 @@ function processXML(xmlRecords, startMonth, endMonth, selectedYear) {
             WsSum: Number(0), WsAvg: Number(0), 
             SrSum: Number(0), SrTotal: Number(0)} //If undefined is returned make Avg 0 (Which XML retrieved does not have some specific months) 
     });
+    
     var finalResult = JSON.stringify(result5);
-    // console.log(finalResult);
     return finalResult; //Return the result of table
 }
 
