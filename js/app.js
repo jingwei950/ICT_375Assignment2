@@ -200,7 +200,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                     graphOutput.attr("hidden", "hidden");
                 } 
                 //Auto scroll to bottom of page when result is out
-                $('html, body').animate({ scrollTop: "950px" });
+                $('html, body').animate({ scrollTop: "965px" });
                 //Reset the form after data displayed
                 form.reset();  
             }
@@ -382,7 +382,7 @@ form.addEventListener("submit", function(e){ //When form is submitted
                     graphOutput.attr("hidden", "hidden");
                 }
                 //Auto scroll to bottom of page when result is out
-                $('html, body').animate({ scrollTop: "950px" });
+                $('html, body').animate({ scrollTop: "965px" });
                 //Reset the form after data displayed
                 form.reset();  
             }
